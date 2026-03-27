@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0F172A">
+<title>Softball Academy 🥎</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0F172A;--surface:#1E293B;--card:#263348;--gold:#FCD34D;--text:#F1F5F9;--muted:#94A3B8;--radius:18px;--font:'Nunito','Arial',sans-serif}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);color:var(--text);-webkit-font-smoothing:antialiased}
+#app{height:100dvh;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.screen{display:none;flex-direction:column;height:100%;overflow:hidden}
+.screen.active{display:flex}
+.header{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;flex-shrink:0}
+.back-btn{background:var(--card);border:none;color:var(--text);width:40px;height:40px;border-radius:12px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.header-text{flex:1}
+.header-text h2{font-size:18px;font-weight:800;line-height:1.2}
+.header-text p{font-size:12px;color:var(--muted);margin-top:1px}
+.scroll-area{flex:1;overflow-y:auto;overflow-x:hidden;padding:0 16px 24px;-webkit-overflow-scrolling:touch}
+.scroll-area::-webkit-scrollbar{display:none}
+#home{background:linear-gradient(165deg,#0F172A 0%,#1E3A5F 55%,#0F172A 100%);justify-content:center;align-items:center;padding:24px;text-align:center}
+.home-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 20% 20%,rgba(59,130,246,.18) 0%,transparent 55%),radial-gradient(ellipse at 80% 75%,rgba(34,197,94,.12) 0%,transparent 50%)}
+.home-content{position:relative;z-index:1;width:100%;max-width:380px}
+.home-ball{font-size:68px;filter:drop-shadow(0 6px 16px rgba(0,0,0,.6));margin-bottom:6px}
+.home-title{color:var(--gold);font-size:28px;font-weight:900;letter-spacing:-.5px}
+.home-sub{color:#93C5FD;font-size:15px;margin:2px 0 6px}
+.home-desc{color:#94A3B8;font-size:13px;line-height:1.6;margin-bottom:28px}
+.home-btns{display:flex;flex-direction:column;gap:11px}
+.home-btn{border:none;border-radius:16px;padding:17px 20px;font-size:17px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:12px;font-family:var(--font);transition:transform .12s,opacity .12s;width:100%;text-align:left}
+.home-btn:active{transform:scale(.97);opacity:.9}
+.btn-icon{font-size:24px;flex-shrink:0}
+.btn-yellow{background:linear-gradient(100deg,#FCD34D,#F59E0B);color:#1C1C1C;box-shadow:0 4px 18px rgba(252,211,77,.3)}
+.btn-green{background:linear-gradient(100deg,#22C55E,#16A34A);color:#fff;box-shadow:0 4px 18px rgba(34,197,94,.28)}
+.btn-blue{background:linear-gradient(100deg,#3B82F6,#1D4ED8);color:#fff;box-shadow:0 4px 18px rgba(59,130,246,.28)}
+.btn-orange{background:linear-gradient(100deg,#FB923C,#EA580C);color:#fff;box-shadow:0 4px 18px rgba(251,146,60,.35)}
+.btn-pink{background:linear-gradient(100deg,#F472B6,#DB2777);color:#fff;box-shadow:0 4px 18px rgba(244,114,182,.35)}
+.btn-purple{background:linear-gradient(100deg,#A78BFA,#7C3AED);color:#fff;box-shadow:0 4px 18px rgba(124,58,237,.28)}
+.home-footer{color:#334155;font-size:11px;margin-top:20px}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:4px 0}
+.cat-card{border:none;border-radius:20px;padding:18px 14px;cursor:pointer;text-align:left;font-family:var(--font);transition:transform .15s}
+.cat-card:active{transform:scale(.96)}
+.cat-icon{font-size:30px;margin-bottom:8px;display:block}
+.cat-name{font-size:14px;font-weight:800;display:block;margin-bottom:2px}
+.cat-sub{font-size:10px;font-weight:600;display:block;margin-bottom:6px}
+.cat-count{font-size:10px;opacity:.6}
+.progress-row{display:flex;gap:3px;padding:0 16px 10px;flex-shrink:0}
+.prog-dot{height:5px;flex:1;border-radius:3px;background:var(--card);transition:background .3s}
+.prog-dot.done{background:var(--gold)}
+.prog-dot.current{background:#60A5FA}
+#learn{background:var(--bg)}
+.learn-scroll{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0 16px 14px}
+.flip-card{flex:1;perspective:1200px;cursor:pointer;min-height:0}
+.flip-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.175,.885,.32,1.275)}
+.flip-inner.flipped{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;border-radius:var(--radius);backface-visibility:hidden;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:22px 20px;text-align:center}
+.flip-front{background:var(--card);border:2px solid rgba(255,255,255,.08)}
+.flip-back{transform:rotateY(180deg);text-align:left;align-items:flex-start;justify-content:flex-start;padding-top:24px;overflow-y:auto}
+.term-badge{padding:7px 20px;border-radius:30px;font-size:22px;font-weight:800;font-style:italic;color:#fff;margin-bottom:12px;letter-spacing:.5px}
+.term-heb{font-size:22px;font-weight:800;color:#fff;margin-bottom:6px}
+.flip-hint{font-size:12px;color:var(--muted);margin-top:16px}
+.back-term{font-size:12px;font-weight:700;font-style:italic;padding:4px 12px;border-radius:20px;background:rgba(255,255,255,.15);color:#fff;margin-bottom:14px;display:inline-block}
+.back-def{font-size:16px;line-height:1.7;color:#fff;margin-bottom:14px;font-weight:500}
+.back-example{background:rgba(0,0,0,.2);border-radius:12px;padding:11px 13px;width:100%}
+.back-example-label{font-size:11px;color:rgba(255,255,255,.6);font-weight:700;margin-bottom:3px}
+.back-example p{font-size:13px;color:#fff;line-height:1.6}
+.card-nav{display:flex;gap:10px;margin-top:10px;flex-shrink:0}
+.nav-btn{flex:1;padding:14px;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);border:none;transition:opacity .12s}
+.nav-btn:active{opacity:.8}
+.nav-prev,.nav-next{background:var(--card);color:var(--text)}
+.nav-flip{color:#1C1C1C;flex:1.4}
+#quizmenu{background:var(--bg)}
+.qmenu-grid{display:flex;flex-direction:column;gap:10px;padding:4px 0}
+.qmenu-card{border:none;border-radius:16px;padding:16px 18px;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:14px;transition:transform .12s,opacity .12s}
+.qmenu-card:active{transform:scale(.97);opacity:.9}
+.qmenu-icon{font-size:26px;flex-shrink:0}
+.qmenu-info{flex:1;text-align:left}
+.qmenu-name{font-size:15px;font-weight:800;display:block}
+.qmenu-count{font-size:11px;opacity:.7;margin-top:2px;display:block}
+.qmenu-arrow{font-size:18px;opacity:.6}
+#quiz{background:var(--bg)}
+.quiz-header-row{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;flex-shrink:0}
+.quiz-score-badge{background:rgba(34,197,94,.15);color:#22C55E;border:1.5px solid rgba(34,197,94,.4);padding:4px 14px;border-radius:20px;font-size:13px;font-weight:700;white-space:nowrap}
+.quiz-q-card{background:var(--card);border-radius:20px;padding:20px;margin-bottom:12px;border:1.5px solid rgba(255,255,255,.06);text-align:center}
+.quiz-q-icon{font-size:28px;margin-bottom:8px}
+.quiz-q-text{font-size:18px;font-weight:700;line-height:1.5}
+.quiz-opts{display:flex;flex-direction:column;gap:9px}
+.quiz-opt{background:var(--card);border:2px solid rgba(255,255,255,.08);border-radius:14px;padding:15px 16px;font-size:15px;font-weight:600;color:var(--text);cursor:pointer;text-align:left;font-family:var(--font);transition:all .18s;display:flex;align-items:center;gap:12px}
+.quiz-opt:active{transform:scale(.98)}
+.quiz-opt.correct{background:rgba(34,197,94,.15);border-color:#22C55E;color:#86EFAC}
+.quiz-opt.wrong{background:rgba(244,63,94,.12);border-color:#F43F5E;color:#FDA4AF}
+.quiz-opt.plain{opacity:.45}
+.opt-icon{font-size:17px;flex-shrink:0}
+.quiz-feedback{margin-top:12px;border-radius:16px;padding:15px;display:none}
+.quiz-feedback.show{display:block}
+.quiz-feedback.good{background:rgba(34,197,94,.12);border:1.5px solid rgba(34,197,94,.3)}
+.quiz-feedback.bad{background:rgba(59,130,246,.1);border:1.5px solid rgba(59,130,246,.3)}
+.fb-title{font-size:14px;font-weight:800;margin-bottom:5px}
+.fb-exp{font-size:13px;line-height:1.6;color:#CBD5E1}
+.fb-next{margin-top:11px;width:100%;padding:13px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);color:#fff;transition:opacity .12s}
+.fb-next:active{opacity:.85}
+#result{background:linear-gradient(165deg,#0F172A,#1E3A5F);justify-content:center;align-items:center;padding:28px 20px;text-align:center}
+.result-icon{font-size:68px;margin-bottom:8px}
+.result-title{font-size:22px;font-weight:900;color:var(--gold);margin-bottom:16px;line-height:1.3}
+.result-box{background:rgba(255,255,255,.07);border-radius:20px;padding:20px 28px;margin-bottom:20px;width:100%}
+.result-score{font-size:46px;font-weight:900;color:#fff}
+.result-of{font-size:14px;color:var(--muted)}
+.result-bar-bg{height:12px;background:rgba(255,255,255,.1);border-radius:6px;margin-top:12px;overflow:hidden}
+.result-bar{height:100%;border-radius:6px;transition:width 1s ease}
+.result-btns{display:flex;flex-direction:column;gap:10px;width:100%}
+#situations{background:var(--bg)}
+.sit-card{background:var(--card);border-radius:20px;padding:20px;margin-bottom:16px;border:2px solid rgba(255,100,50,.25)}
+.sit-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(251,146,60,.15);border:1.5px solid rgba(251,146,60,.4);color:#FB923C;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:12px}
+.sit-scene{background:rgba(0,0,0,.3);border-radius:14px;padding:14px 16px;margin-bottom:14px;border:1px solid rgba(255,255,255,.07)}
+.sit-scene-label{font-size:11px;color:#94A3B8;font-weight:700;margin-bottom:6px;letter-spacing:.5px}
+.sit-scene-text{font-size:16px;line-height:1.75;color:#F1F5F9;font-weight:500}
+.sit-question{font-size:17px;font-weight:800;color:#FCD34D;margin-bottom:14px;line-height:1.5}
+.sit-opts{display:flex;flex-direction:column;gap:9px;margin-bottom:12px}
+.sit-opt{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;font-size:15px;font-weight:600;color:var(--text);cursor:pointer;text-align:left;font-family:var(--font);transition:all .18s;display:flex;align-items:center;gap:10px}
+.sit-opt:active{transform:scale(.98)}
+.sit-opt.correct{background:rgba(34,197,94,.15);border-color:#22C55E;color:#86EFAC}
+.sit-opt.wrong{background:rgba(244,63,94,.12);border-color:#F43F5E;color:#FDA4AF}
+.sit-opt.plain{opacity:.4;pointer-events:none}
+.sit-explain{display:none;background:rgba(59,130,246,.1);border:1.5px solid rgba(59,130,246,.35);border-radius:14px;padding:14px 16px;margin-top:4px}
+.sit-explain.show{display:block}
+.sit-explain-title{font-size:14px;font-weight:800;margin-bottom:6px}
+.sit-explain-text{font-size:14px;line-height:1.7;color:#CBD5E1}
+.sit-rule{font-size:12px;color:#60A5FA;margin-top:8px;font-weight:600}
+.sit-progress-bar{height:6px;background:rgba(255,255,255,.1);border-radius:3px;margin:0 16px 12px;overflow:hidden;flex-shrink:0}
+.sit-progress-fill{height:100%;background:linear-gradient(90deg,#FB923C,#F59E0B);border-radius:3px;transition:width .5s ease}
+.sit-done-box{text-align:center;padding:32px 20px;background:linear-gradient(135deg,#1E3A5F,#0F172A);border-radius:20px;border:2px solid rgba(252,211,77,.25);margin-bottom:24px}
+.sit-done-icon{font-size:60px;margin-bottom:10px}
+.sit-done-title{font-size:22px;font-weight:900;color:var(--gold);margin-bottom:18px;line-height:1.3}
+.sit-done-score{font-size:46px;font-weight:900;color:#fff}
+.sit-done-of{font-size:14px;color:var(--muted);margin-bottom:16px}
+#field{background:var(--bg)}
+.field-svg-wrap{margin:0 16px 12px;border-radius:20px;overflow:hidden;flex-shrink:0;box-shadow:0 6px 24px rgba(0,0,0,.4)}
+.field-svg-wrap svg{display:block;width:100%}
+.field-info{margin:0 16px;background:var(--card);border-radius:16px;padding:16px;border:2px solid rgba(252,211,77,.3);flex-shrink:0}
+.field-info.hidden{display:none}
+.field-name-badge{display:inline-block;padding:3px 12px;border-radius:20px;background:#1D4ED8;color:#fff;font-size:12px;font-weight:700;font-style:italic;margin-bottom:5px}
+.field-heb{font-size:19px;font-weight:800;color:var(--text);margin-bottom:6px}
+.field-desc{font-size:14px;color:#CBD5E1;line-height:1.7}
+.field-hint{margin:0 16px;text-align:center;color:var(--muted);font-size:13px;padding:13px;background:var(--card);border-radius:14px;border:1.5px solid rgba(255,255,255,.05)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .25s ease both}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.05)}100%{transform:scale(1)}}
+.pop{animation:pop .22s ease}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HOME -->
+<div id="home" class="screen active">
+  <div class="home-glow"></div>
+  <div class="home-content">
+    <div class="home-ball">🥎</div>
+    <div class="home-title">Softball Academy</div>
+    <div class="home-sub">Nomads Tech Solutions</div>
+    <div class="home-desc">Learn the rules of the game in a fun way!<br>Key softball terms are highlighted throughout.</div>
+    <div class="home-btns">
+      <button class="home-btn btn-yellow" onclick="showScreen('categories')"><span class="btn-icon">📚</span><span>Flashcard Study</span></button>
+      <button class="home-btn btn-green" onclick="showScreen('quizmenu')"><span class="btn-icon">🧠</span><span>Quiz — Test Your Knowledge!</span></button>
+      <button class="home-btn btn-orange" onclick="startSituations()"><span class="btn-icon">🎮</span><span>Game Situations — Advanced</span></button>
+      <button class="home-btn btn-pink" onclick="startSituationsEasy()"><span class="btn-icon">⭐</span><span>Game Situations — Beginner</span></button>
+      <button class="home-btn btn-blue" onclick="showScreen('field')"><span class="btn-icon">🏟️</span><span>Field Map</span></button>
+    </div>
+    <div class="home-footer" id="homeFooter">Loading...</div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<div id="categories" class="screen">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('home')">←</button>
+    <div class="header-text"><h2>Choose a Topic</h2><p>Select a category to study</p></div>
+  </div>
+  <div class="scroll-area"><div class="cat-grid" id="catGrid"></div></div>
+</div>
+
+<!-- LEARN (Flashcards) -->
+<div id="learn" class="screen">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('categories')">←</button>
+    <div class="header-text"><h2 id="learnCatName">—</h2><p id="learnCatSub">—</p></div>
+    <div id="learnCounter" style="font-size:13px;font-weight:700;background:rgba(255,255,255,.08);padding:4px 12px;border-radius:20px;flex-shrink:0">1/6</div>
+  </div>
+  <div class="progress-row" id="learnProgress"></div>
+  <div class="learn-scroll">
+    <div class="flip-card" id="flipCard" onclick="flipCard()">
+      <div class="flip-inner" id="flipInner">
+        <div class="flip-face flip-front">
+          <div class="term-badge" id="cardTerm">—</div>
+          <div class="term-heb" id="cardHeb">—</div>
+          <div class="flip-hint">Tap to flip 👆</div>
+        </div>
+        <div class="flip-face flip-back" id="cardBack"></div>
+      </div>
+    </div>
+    <div class="card-nav">
+      <button class="nav-btn nav-prev" onclick="moveCard(-1)">← Previous</button>
+      <button class="nav-btn nav-flip" id="flipBtnColor" onclick="flipCard()">🔄 Flip</button>
+      <button class="nav-btn nav-next" onclick="moveCard(1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ MENU -->
+<div id="quizmenu" class="screen">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('home')">←</button>
+    <div class="header-text"><h2>Choose a Quiz Topic</h2><p>15 random questions per topic</p></div>
+  </div>
+  <div class="scroll-area"><div class="qmenu-grid" id="quizMenuGrid"></div></div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="screen">
+  <div class="quiz-header-row">
+    <button class="back-btn" onclick="showScreen('quizmenu')">←</button>
+    <div style="flex:1;font-size:13px;color:var(--muted);font-weight:600" id="quizProgress">Question 1 of 15</div>
+    <div class="quiz-score-badge" id="quizScore">✓ 0</div>
+  </div>
+  <div class="progress-row" id="quizProgressBar"></div>
+  <div class="scroll-area">
+    <div class="quiz-q-card fade-in" id="quizQCard">
+      <div class="quiz-q-icon">🧠</div>
+      <div class="quiz-q-text" id="quizQ">—</div>
+    </div>
+    <div class="quiz-opts" id="quizOpts"></div>
+    <div class="quiz-feedback" id="quizFeedback">
+      <div class="fb-title" id="fbTitle"></div>
+      <div class="fb-exp" id="fbExp"></div>
+      <button class="fb-next" id="fbNext" onclick="nextQuestion()">Next Question →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result" class="screen">
+  <div class="result-icon" id="resultIcon">🏆</div>
+  <div class="result-title" id="resultTitle">Well Done!</div>
+  <div class="result-box">
+    <div class="result-score" id="resultScore">0 / 15</div>
+    <div class="result-of">Correct Answers</div>
+    <div class="result-bar-bg"><div class="result-bar" id="resultBar" style="width:0%"></div></div>
+  </div>
+  <div class="result-btns">
+    <button class="home-btn btn-green" onclick="restartSameTopic()"><span class="btn-icon">🔄</span><span>Try Again — Same Topic!</span></button>
+    <button class="home-btn btn-purple" onclick="showScreen('quizmenu')"><span class="btn-icon">🧠</span><span>Different Topic</span></button>
+    <button class="home-btn btn-blue" onclick="showScreen('home')"><span class="btn-icon">🏠</span><span>Back to Menu</span></button>
+  </div>
+</div>
+
+<!-- SITUATIONS (Advanced) -->
+<div id="situations" class="screen">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('home')">←</button>
+    <div class="header-text"><h2>🎮 Game Situations</h2><p id="sitSubtitle">What would you do?</p></div>
+    <div id="sitCounter" style="font-size:13px;font-weight:700;background:rgba(255,255,255,.08);padding:4px 12px;border-radius:20px;flex-shrink:0">1/20</div>
+  </div>
+  <div class="sit-progress-bar"><div class="sit-progress-fill" id="sitProgressFill" style="width:0%"></div></div>
+  <div class="scroll-area" id="sitArea"></div>
+</div>
+
+<!-- SITUATIONS (Beginner) -->
+<div id="situations-easy" class="screen">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('home')">←</button>
+    <div class="header-text"><h2>⭐ Game Situations</h2><p id="sitEasySubtitle">Beginner</p></div>
+    <div id="sitEasyCounter" style="font-size:13px;font-weight:700;background:rgba(255,255,255,.08);padding:4px 12px;border-radius:20px;flex-shrink:0">1/15</div>
+  </div>
+  <div class="sit-progress-bar"><div class="sit-progress-fill" id="sitEasyProgressFill" style="width:0%"></div></div>
+  <div class="scroll-area" id="sitEasyArea"></div>
+</div>
+
+<!-- FIELD MAP -->
+<div id="field" class="screen">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('home')">←</button>
+    <div class="header-text"><h2>Field Map</h2><p>Tap a player to learn about them</p></div>
+  </div>
+  <div class="field-svg-wrap">
+    <svg viewBox="0 0 360 265" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="gr1" cx="50%" cy="65%" r="70%"><stop offset="0%" stop-color="#16A34A"/><stop offset="100%" stop-color="#052e16"/></radialGradient>
+        <radialGradient id="gr2" cx="50%" cy="60%" r="55%"><stop offset="0%" stop-color="#B45309" stop-opacity=".7"/><stop offset="100%" stop-color="#451a03" stop-opacity=".4"/></radialGradient>
+      </defs>
+      <rect width="360" height="265" rx="10" fill="url(#gr1)"/>
+      <path d="M180 250 L68 158 L180 103 L292 158 Z" fill="url(#gr2)"/>
+      <path d="M180 250 L60 125 Q55 40 180 35 Q305 40 300 125 Z" fill="none" stroke="#15803D" stroke-width="2" stroke-dasharray="7 5" opacity=".7"/>
+      <path d="M180 250 L68 158" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/>
+      <path d="M180 250 L292 158" stroke="rgba(255,255,255,.5)" stroke-width="1.5"/>
+      <rect x="170" y="99" width="20" height="10" rx="2" fill="#fff" opacity=".9"/>
+      <rect x="170" y="157" width="20" height="10" rx="2" fill="#fff" opacity=".9"/>
+      <rect x="60" y="150" width="10" height="10" rx="2" fill="#fff" opacity=".9"/>
+      <rect x="291" y="150" width="10" height="10" rx="2" fill="#fff" opacity=".9"/>
+      <polygon points="173,255 187,255 191,248 180,243 169,248" fill="#fff" opacity=".95"/>
+      <circle cx="180" cy="160" r="20" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="1" stroke-dasharray="4 3"/>
+      <rect x="173" y="157" width="14" height="5" rx="1.5" fill="#fff" opacity=".85"/>
+      <g id="fieldDots"></g>
+    </svg>
+  </div>
+  <div class="field-info hidden" id="fieldInfo">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <div class="field-name-badge" id="fieldNameBadge"></div>
+        <div class="field-heb" id="fieldHeb"></div>
+      </div>
+      <button onclick="clearFieldInfo()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:0 0 0 8px">✕</button>
+    </div>
+    <div class="field-desc" id="fieldDesc"></div>
+  </div>
+  <div class="field-hint" id="fieldHint">Tap one of the 9 players 👆</div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+const CATS=[
+{id:"basics",name:"Game Basics",sub:"Core Rules & Concepts",icon:"🏟️",bg:"#172554",accent:"#3B82F6",text:"#93C5FD",cards:[
+{term:"Inning",heb:"Game Cycle",def:"A round of play where both teams take turns batting. A regular game = 7 innings.",ex:"Each inning: one team bats → one team fields."},
+{term:"Half-Inning",heb:"Top / Bottom Half",def:"One team's turn. Top half = visiting team. Bottom half = home team.",ex:"Top of the 3rd = the visiting team's turn in the third inning."},
+{term:"Out",heb:"Player Eliminated",def:"An offensive player is retired. 3 Outs → sides switch!",ex:"3 Outs = the batting team switches to defense. Everyone changes!"},
+{term:"Run",heb:"A Point Scored",def:"A point earned when a runner touches all bases and Home Plate before the third Out.",ex:"The team with more Runs after 7 innings wins!"},
+{term:"Fair Ball",heb:"In Bounds",def:"A ball that lands inside the field boundaries. A ball over the fence in fair territory = Home Run!",ex:"Fair Ball → the batter becomes a Batter-Runner!"},
+{term:"Foul Ball",heb:"Out of Bounds",def:"A ball that lands outside field boundaries. Counts as a Strike, but cannot cause a strikeout after 2 Strikes.",ex:"Foul + 0 Strikes → Strike. Foul + 2 Strikes → play continues."},
+{term:"Dead Ball",heb:"Play Stopped",def:"A situation where the game is paused and no action is in progress. Any running doesn't count.",ex:"After a Foul Ball: dead ball, runners return to their bases."},
+{term:"Live Ball",heb:"Ball in Play",def:"The ball is in use and the game is active. Runners can run and be put out.",ex:"After a legal pitch: the ball is live — game on!"},
+{term:"Forfeit",heb:"Awarded Victory",def:"A team that commits serious violations: the opponent wins automatically 7-0.",ex:"An ejected player returns to the field → Forfeit for their team!"},
+{term:"Regulation Game",heb:"Official Game",def:"A game completed after 7 innings, or at least 5 innings called by an umpire.",ex:"Rain after 4 complete innings = not a regulation game."},
+{term:"Tiebreaker",heb:"Extra Innings Rule",def:"From the 8th inning onward, each team starts with a runner on second base!",ex:"Raises tension: starting with a runner already in scoring position!"},
+{term:"Run Ahead Rule",heb:"Mercy Rule",def:"Game ends early: 15+ runs after 3 innings, 10+ after 4, 7+ after 5.",ex:"Also called Mercy Rule — to avoid humiliating a weaker team."},
+]},
+{id:"positions",name:"Player Positions",sub:"Roles on the Field",icon:"👥",bg:"#052e16",accent:"#22C55E",text:"#86EFAC",cards:[
+{term:"Pitcher",heb:"The Thrower",def:"Throws the ball underhand toward the batter. Stands on the Pitcher's Plate. Must stop for 2 seconds before delivering.",ex:"The Pitcher is the most important player on defense!"},
+{term:"Catcher",heb:"Behind the Plate",def:"Catches pitches behind home plate. Must wear a helmet, mask, chest protector, and shin guards.",ex:"The Catcher signals to the Pitcher which pitch to throw!"},
+{term:"First Baseman",heb:"First Base Guard",def:"Guards first base and catches throws to put out runners. Only the First Baseman and Catcher may use a Mitt.",ex:"Almost every Infield Out goes through First Base!"},
+{term:"Second Baseman",heb:"Second Base Guard",def:"Guards the area around second base on the right side. Partners with the Shortstop for double plays.",ex:"Second Baseman + Shortstop = the busiest defensive duo!"},
+{term:"Third Baseman",heb:"The Hot Corner",def:"Guards third base. Requires quick reactions for hard-hit balls — called the 'Hot Corner'!",ex:"'Hot Corner': the hardest-hit balls come right here!"},
+{term:"Shortstop",heb:"Between 2nd & 3rd",def:"Plays between second and third base. Requires speed and a strong throwing arm.",ex:"Usually the Shortstop is the best fielder on the team!"},
+{term:"Left Fielder",heb:"Left Side Outfield",def:"Covers the left side of the outfield. Fields high and deep fly balls.",ex:"The Left Fielder usually throws to Third Base!"},
+{term:"Center Fielder",heb:"Middle Outfield",def:"Covers center field. Covers the most ground — usually the fastest player.",ex:"The Center Fielder is the outfield's main defender!"},
+{term:"Right Fielder",heb:"Right Side Outfield",def:"Covers the right side of the outfield. Long throws often reach Third Base or First Base.",ex:"The Right Fielder often throws to First Base!"},
+{term:"Designated Player (DP)",heb:"Batting Specialist",def:"A player who bats in place of one fielder (the FLEX). Allows 10 players on a team.",ex:"The DP bats but doesn't have to play in the field!"},
+{term:"FLEX",heb:"Field Specialist",def:"A player who fields but doesn't bat — the DP bats in their place. Listed 10th in the lineup.",ex:"DP + FLEX = 10 players on a team. Together they're one unit!"},
+]},
+{id:"pitching",name:"Pitching Rules",sub:"Delivery & Violations",icon:"🎯",bg:"#451a03",accent:"#F59E0B",text:"#FDE68A",cards:[
+{term:"Strike Zone",heb:"Target Area",def:"The area above home plate, between the bottom of the chest and the bottom of the batter's knee.",ex:"The Plate Umpire decides if the pitch crossed the Strike Zone!"},
+{term:"Strike",heb:"Count Goes Up",def:"A pitch that passed through the Strike Zone unhit, a swing and miss, or a Foul Ball with fewer than 2 Strikes.",ex:"3 Strikes = Out! The batter is retired."},
+{term:"Ball",heb:"Off Target",def:"A pitch that didn't pass through the Strike Zone and wasn't swung at.",ex:"4 Balls = Walk! The batter gets First Base for free!"},
+{term:"Walk",heb:"Free Base",def:"4 Balls = Walk. The batter takes first base. An Intentional Walk is also possible.",ex:"Intentional Walk: the defensive team decides to give a Walk on purpose!"},
+{term:"Illegal Pitch",heb:"Rule Violation",def:"A pitch that breaks the rules: didn't stop 2 seconds, Crow Hop, releasing the hand too early.",ex:"Penalty: extra Ball to the batter's count. If they swung — they choose."},
+{term:"Crow Hop",heb:"Illegal Jump",def:"A forbidden move: the Pitcher jumps off the plate and uses a second leg for push-off.",ex:"Crow Hop = Illegal Pitch! Immediate penalty."},
+{term:"Leaping",heb:"Legal Airborne Move",def:"The Pitcher's foot leaves the plate during delivery — legal! As long as it's not a Crow Hop.",ex:"Leaping allowed: the foot left the plate naturally during the swing."},
+{term:"No Pitch",heb:"Canceled Delivery",def:"A situation where the pitch is canceled and doesn't count. Example: a pitch during a dead ball.",ex:"A pitch when the umpire hasn't said 'Play Ball' = No Pitch!"},
+{term:"Warm-Up Pitch",heb:"Pre-Inning Throws",def:"The Pitcher may warm up before each inning. 5 pitches in the first inning, 3 per inning after that.",ex:"An unauthorized extra warm-up pitch = Ball to the batter!"},
+{term:"Pitcher's Plate",heb:"The Rubber",def:"A white rubber strip 61×15 cm. The Pivot Foot must touch it at the start of each pitch.",ex:"If the foot doesn't touch the plate = Illegal Pitch!"},
+{term:"Pivot Foot",heb:"Pushing Foot",def:"The foot that touches the Pitcher's Plate and is used for the push-off. Must stay on the plate until the pitch begins.",ex:"The Pivot Foot drives the body forward — it's the Pitcher's engine!"},
+]},
+{id:"batting",name:"Batting Rules",sub:"At the Plate",icon:"🏏",bg:"#2e1065",accent:"#A78BFA",text:"#DDD6FE",cards:[
+{term:"Batter",heb:"At the Plate",def:"A player standing in the Batter's Box trying to hit the ball. Must stay inside the lines!",ex:"The Batter stays a Batter until put out or becoming a Batter-Runner."},
+{term:"Batter-Runner",heb:"After Contact",def:"A player who has finished batting but hasn't yet reached first base — both batter and runner at once.",ex:"Batter hits a fair ball → becomes a Batter-Runner!"},
+{term:"Batting Order",heb:"The Lineup",def:"The list of players in batting order. Must be maintained throughout the entire game!",ex:"A player batting out of turn = Batting Out of Order!"},
+{term:"Home Run",heb:"Over the Fence!",def:"The ball clears the fence in fair territory! All runners + the batter score.",ex:"Grand Slam = Home Run with players on all 3 bases = 4 runs!"},
+{term:"Grand Slam",heb:"4 Runs at Once!",def:"A Home Run hit with runners on all 3 bases. 4 runs scored at once!",ex:"The most exciting moment in softball = Grand Slam!"},
+{term:"Bunt",heb:"Soft Tap",def:"A gentle hit: the batter doesn't swing but lets the ball roll slowly in front of them.",ex:"A Bunt helps advance runners even if the batter is put out."},
+{term:"Slap Hit",heb:"Quick Strike",def:"A short, quick hit (not a Bunt). The batter sometimes starts running before contact within the Batter's Box.",ex:"Slap Hit preferred by fast players who want to reach base quickly!"},
+{term:"Foul Tip",heb:"Glancing Blow",def:"A ball that lightly grazes the top of the bat and flies directly into the Catcher's hands. Strike — ball is live!",ex:"Foul Tip + 2 Strikes = Out! The batter is retired."},
+{term:"Intentional Walk",heb:"Strategic Walk",def:"The defensive team chooses to give the batter a Walk on purpose. They announce it to the umpire.",ex:"Strategy: better to Walk a strong batter and face the next one!"},
+{term:"Hit by Pitch",heb:"Batter Hit",def:"The ball hits the batter's body. Batter gets first base! If they didn't try to dodge — they don't get it.",ex:"Ouch! Hit by pitch = free first base!"},
+{term:"Infield Fly",heb:"Auto Out Rule",def:"A short pop-up that an infielder can easily catch. The batter is automatically out — to prevent a trick play.",ex:"Infield Fly called = batter is out, runners don't have to run!"},
+{term:"Dropped Third Strike",heb:"Catcher Drops It!",def:"If the Catcher doesn't catch strike three — the batter can try to run to first base!",ex:"Catcher dropped it? The batter runs — maybe they'll make it!"},
+]},
+{id:"running",name:"Base Running",sub:"On the Basepaths",icon:"🏃",bg:"#4c0519",accent:"#F43F5E",text:"#FECDD3",cards:[
+{term:"Runner",heb:"On Base",def:"A player who finished their at-bat, reached first base, and hasn't been put out.",ex:"The Runner tries to advance through all bases and touch Home Plate!"},
+{term:"Stolen Base",heb:"Base Thief",def:"A runner advances to the next base without the batter hitting, while the Pitcher is delivering.",ex:"The Catcher tries to catch the stealing runner with a fast throw!"},
+{term:"Force Out",heb:"Must Move",def:"When a runner must leave their base because the runner behind them is coming. The fielder touches the base with the ball.",ex:"When the batter hits a fair ball: all runners behind other runners must advance."},
+{term:"Tag Out",heb:"Touch Out",def:"A fielder touches a runner (when off base) with the ball. The runner is out!",ex:"If the runner leaves the base: the fielder can tag them and get them out!"},
+{term:"Tag Up",heb:"Touch & Go",def:"After a caught fly ball — the runner must touch their base before trying to advance.",ex:"Ball caught → touch base → then run!"},
+{term:"Double Play",heb:"Two for One",def:"Two outs in one continuous action! Efficiently retires runners.",ex:"Ground ball → second base → first base = Double Play!"},
+{term:"Triple Play",heb:"Three Outs!",def:"Three outs in one continuous action! Extremely rare.",ex:"Triple Play = rarest thing in softball, ends the inning immediately!"},
+{term:"Obstruction",heb:"Blocking Foul",def:"A fielder prevents a runner from advancing when they don't have the ball. Runner gets an extra base!",ex:"A fielder can't block a runner if they don't have the ball!"},
+{term:"Base Path",heb:"Running Lane",def:"The direct path between two bases. The runner must stay within one meter of the path.",ex:"Runner who strays more than a meter to avoid a tag = Out!"},
+{term:"Over-Slide",heb:"Slid Too Far!",def:"A runner who slides past the base and loses contact — may be put out!",ex:"Sliding past first base is allowed — but not other bases!"},
+{term:"Temporary Runner",heb:"Sub Runner",def:"Substitutes for a Catcher or Pitcher on base with 2 Outs — to save time.",ex:"The Temporary Runner must be the player scheduled to bat last who is not on base at the time!"},
+]},
+{id:"fieldequip",name:"Field & Equipment",sub:"Gear & Dimensions",icon:"⚙️",bg:"#1a2744",accent:"#60A5FA",text:"#BAE6FD",cards:[
+{term:"Home Plate",heb:"Five-Sided Base",def:"A white five-sided plate. The runner must touch it to score a run.",ex:"Home Plate also defines the Strike Zone!"},
+{term:"Pitcher's Circle",heb:"Pitcher's Zone",def:"A 4.88m diameter circle around the plate. When the Pitcher is in the circle with the ball, runners must decide — advance or retreat.",ex:"Pitcher in circle with ball → runners must decide immediately!"},
+{term:"Foul Lines",heb:"Field Boundaries",def:"Two lines from Home Plate to the fence defining the playing area. A ball on the line = Fair Ball!",ex:"Ball landed exactly on the line = Fair Ball!"},
+{term:"Foul Pole",heb:"The Fair Post",def:"The pole at the end of the fence. A ball that hits the pole = Home Run!",ex:"Ball hitting the Foul Pole = Home Run! The 'foul' pole is actually fair!"},
+{term:"Double Base",heb:"Safety Base",def:"A special first base: half in fair territory (white) and half in foul territory (colored). Batter touches the colored side, fielder the white.",ex:"The Double Base prevents collisions between batter-runner and fielder!"},
+{term:"Infield",heb:"Inner Diamond",def:"The fair territory area covered by the infielders. Includes the diamond.",ex:"Infield Fly is only called when the ball is high in the infield!"},
+{term:"Outfield",heb:"Outer Grass",def:"The large area beyond the infield up to the fence. Covered by 3 fielders.",ex:"Ball landing in the Outfield = usually a Single or Double!"},
+{term:"Warning Track",heb:"Caution Zone",def:"A strip of gravel or dirt before the fence. Warns fielders the fence is close.",ex:"Fielder who feels gravel underfoot — the fence is near!"},
+{term:"Bat",heb:"Hitting Tool",def:"Uniform, round, made of wood, metal, or composite materials. Maximum 86.4 cm (34 in) long.",ex:"An Altered Bat is forbidden! Removed and the batter is ejected!"},
+{term:"Glove / Mitt",heb:"Fielding Gear",def:"All players may wear a glove. Only the Catcher and First Baseman may use a Mitt.",ex:"Mitt = glove without finger slots. Deeper for catching!"},
+{term:"Helmet",heb:"Head Protection",def:"Required for batters, batter-runners, and runners. Must have two ear flaps.",ex:"Batter who refuses to wear a helmet = Out!"},
+]},
+{id:"scoring",name:"Scoring & Rules",sub:"Points & Officiating",icon:"🏆",bg:"#0c2a4a",accent:"#38BDF8",text:"#BAE6FD",cards:[
+{term:"Run / Score",heb:"A Point",def:"A run is scored when a runner passes all 3 bases and touches Home Plate before the third Out.",ex:"The team with more runs after 7 innings wins!"},
+{term:"RBI",heb:"Run Batted In",def:"Run Batted In: how many times the batter caused runners to score runs.",ex:"Home Run = at least 1 RBI. Grand Slam = 4 RBIs!"},
+{term:"Winning",heb:"Taking the W",def:"The team with more Runs at the end of the game wins. Tie → Tiebreaker innings!",ex:"The home team bats in the bottom half = home field advantage!"},
+{term:"Appeal Play",heb:"Ruling Request",def:"An action the umpire cannot rule on alone — the defensive team must request a ruling.",ex:"Runner who skipped a base? The defense must request an Appeal Play!"},
+{term:"Interference",heb:"Offensive Foul",def:"An offensive player interferes with a fielder trying to make a play. Penalty: Out!",ex:"Batter who interferes with the Catcher's throw = Interference!"},
+{term:"Obstruction",heb:"Defensive Foul",def:"A fielder interferes with a runner advancing without the ball. Penalty: extra base for runner.",ex:"Fielder blocks runner without the ball = Obstruction!"},
+{term:"Umpire",heb:"Game Official",def:"The umpire enforces the rules. The Plate Umpire is the head umpire.",ex:"Plate Umpire decides: Strike, Ball, Fair, Foul, Safe, Out!"},
+{term:"Protest",heb:"Official Dispute",def:"A team that believes the umpire misinterpreted a rule can file an official protest.",ex:"Can only protest rule interpretation — not umpire judgment calls!"},
+{term:"Ejection",heb:"Removed!",def:"The umpire removes a player, coach, or staff member. The ejected person must leave the field immediately.",ex:"A dispute with the umpire that got out of hand → Ejection!"},
+{term:"ERA",heb:"Pitcher's Stat",def:"Earned Run Average: a measure of pitching quality. Average earned runs allowed per 7 innings.",ex:"Low ERA = good pitcher. ERA 1.50 = excellent!"},
+{term:"Single",heb:"One-Base Hit",def:"A fair hit where the batter advances to first base only.",ex:"A Single is the most common hit in softball!"},
+{term:"Double",heb:"Two-Base Hit",def:"A fair hit where the batter advances to second base.",ex:"Ball landing in the Gap (between outfielders) = usually a Double!"},
+{term:"Walk-off Win",heb:"Instant Victory",def:"The winning run scored in the last bottom half inning — the game ends immediately!",ex:"Walk-off = most dramatic moment in softball! The crowd goes wild!"},
+{term:"Earned Run",heb:"Legitimate Run",def:"A run scored without fielding errors. Counted in the Pitcher's ERA.",ex:"Run after a fielder's error = Unearned Run, not counted in ERA!"},
+{term:"Error (E)",heb:"Fielder's Mistake",def:"A fielding mistake that allowed the batter/runner to advance. Not counted as a Hit.",ex:"Fielder who muffed an easy ball = Error. Runner advances, but no Hit!"},
+]},
+];
+
+const QD={
+basics:{name:"Game Basics",color:"#3B82F6",bg:"#172554",qs:[
+{q:"How many Outs does each team get per inning?",opts:["1","2","3","4"],ans:2,exp:"3 Outs before switching sides. 3×2 = 6 Outs total per inning!"},
+{q:"How many innings are in a regular softball game?",opts:["5","6","7","9"],ans:2,exp:"Softball Fast Pitch = 7 innings. Baseball = 9 innings."},
+{q:"What is the score of a Forfeit win?",opts:["1-0","7-0","9-0","3-0"],ans:1,exp:"Forfeit = 7-0 in favor of the non-offending team — same as the number of innings!"},
+{q:"What happens in a Tiebreaker Inning?",opts:["Add a player","Each team starts with runner on 2nd","Whoever bats first wins","4 Outs each"],ans:1,exp:"Tiebreaker from inning 8: each team starts with a runner on 2nd base!"},
+{q:"What counts as a Fair Ball?",opts:["Ball that left the field","Ball that landed inside field boundaries","Ball that hit the batter","Ball outside the foul lines"],ans:1,exp:"Fair Ball = ball that landed in fair territory, between the foul lines!"},
+{q:"What is a Dead Ball?",opts:["A broken ball","Game paused with no action","Ball that left the field","The last ball"],ans:1,exp:"Dead Ball = ball not in play. Runs scored during Dead Ball don't count."},
+{q:"How many runs ahead after 5 innings to end the game early?",opts:["5","7","10","15"],ans:1,exp:"Run Ahead Rule: 7-run lead after 5 innings = game over!"},
+{q:"When can a game end before 7 innings?",opts:["After inning 5 always","When there's a large run difference","When rain starts","When the pitcher is replaced"],ans:1,exp:"The Run Ahead (Mercy) Rule ends the game early when the run difference is large!"},
+{q:"What is a Half-Inning?",opts:["Half a game","One team's turn in an inning","3 quick Outs","The inning halftime"],ans:1,exp:"Half-Inning = one team's turn. Top = visitors, Bottom = home team."},
+{q:"The visiting team bats in the ...?",opts:["Bottom half","Top half","Both halves","Doesn't bat"],ans:1,exp:"The visiting team always bats in the Top half of each inning!"},
+{q:"What is a Live Ball?",opts:["A brand new ball","Ball that the game is currently active with","A ball that was just hit","A warm-up pitch"],ans:1,exp:"Live Ball = ball is in play, game is active — runners can run!"},
+{q:"After how many complete innings is a called game official?",opts:["3","4","5","6"],ans:2,exp:"5+ complete innings = official game even if stopped early."},
+{q:"What happens to runs scored during a Dead Ball?",opts:["They count","They don't count","Depends on umpire","Count as half"],ans:1,exp:"Runs scored during a Dead Ball do not count!"},
+{q:"What is the Run Ahead Rule after 3 innings?",opts:["7-run lead","10-run lead","15-run lead","5-run lead"],ans:2,exp:"After 3 innings: a 15-run lead = game ends early!"},
+{q:"How many runs ahead are needed after 4 innings?",opts:["5","7","10","15"],ans:2,exp:"Run Ahead Rule: 10-run lead after 4 innings = game over!"},
+]},
+positions:{name:"Player Positions",color:"#22C55E",bg:"#052e16",qs:[
+{q:"Who may use a Mitt (not just a glove)?",opts:["Every player","Only the Pitcher","Catcher and First Baseman only","Only Pitcher and Catcher"],ans:2,exp:"Only the Catcher and First Baseman may use a Mitt!"},
+{q:"What is the 'Hot Corner' position?",opts:["First Base","Second Base","Third Base","Shortstop"],ans:2,exp:"Third Base = 'Hot Corner' — receives the hardest-hit balls!"},
+{q:"What is the Shortstop's role?",opts:["Guards 1st base","Guards between 2nd and 3rd base","Guards center field","Pitches"],ans:1,exp:"Shortstop guards between bases 2 and 3 — usually the team's best fielder!"},
+{q:"How many outfielders are there?",opts:["2","3","4","5"],ans:1,exp:"3 Outfielders: Left Fielder, Center Fielder, Right Fielder."},
+{q:"What is a DP?",opts:["Double Play","Designated Player","Dead Pitch","Defense Player"],ans:1,exp:"DP = Designated Player — bats in place of the FLEX!"},
+{q:"What does the FLEX do?",opts:["Bats and fields","Plays in the field but doesn't bat","Runs only","Catches pitches"],ans:1,exp:"FLEX plays in the field but doesn't bat — the DP bats in their place!"},
+{q:"Who stands behind Home Plate?",opts:["Shortstop","First Baseman","Catcher","Left Fielder"],ans:2,exp:"Catcher = the player who stands behind Home Plate!"},
+{q:"What does the Center Fielder need more than anyone?",opts:["Height","Running speed","Throwing power","Batting skill"],ans:1,exp:"Center Fielder covers the most ground — must be the fastest player!"},
+{q:"Who does the Right Fielder usually throw to?",opts:["Home Plate","Second Base","Third Base","First Base"],ans:3,exp:"Right Fielder often throws to First Base for a quick putout!"},
+{q:"DP and FLEX — how many players does this add to the team?",opts:["0","1","2","3"],ans:1,exp:"DP + FLEX = 10 players on the roster instead of 9. That's 1 extra!"},
+{q:"What must the Catcher wear?",opts:["Only a helmet","Only a mask","Helmet, mask, chest protector & shin guards","Just shin guards"],ans:2,exp:"Catcher must wear full gear: helmet + mask + chest protector + shin guards!"},
+{q:"What does the Left Fielder usually do with the ball?",opts:["Throws to First Base","Throws to Third Base","Throws to Home Plate","Holds it"],ans:1,exp:"Left Fielder usually throws to Third Base to stop advancing runners!"},
+{q:"How many players are on a team without a DP?",opts:["7","8","9","10"],ans:2,exp:"9 players without DP. With DP = 10 players!"},
+{q:"Who guards the area between second and third base?",opts:["Second Baseman","First Baseman","Shortstop","Center Fielder"],ans:2,exp:"Shortstop guards between bases 2 and 3!"},
+{q:"Which position is between the Shortstop and the left fence?",opts:["Left Fielder","Center Fielder","Right Fielder","Second Baseman"],ans:0,exp:"Left Fielder is in the left outfield, beyond the Shortstop!"},
+]},
+pitching:{name:"Pitching Rules",color:"#F59E0B",bg:"#451a03",qs:[
+{q:"How many Balls cause a Walk?",opts:["2","3","4","5"],ans:2,exp:"4 Balls = Walk! The batter gets first base for free."},
+{q:"How many seconds must the Pitcher stop before delivering?",opts:["1","2","3","5"],ans:1,exp:"The Pitcher must stop for at least 2 seconds before delivering!"},
+{q:"What is a Crow Hop?",opts:["A legal jump","An illegal jump from the plate","A type of pitch","A foot movement"],ans:1,exp:"Crow Hop = illegal move. The Pitcher jumps off the plate and uses a second leg!"},
+{q:"How many warm-up pitches are allowed at the start of the game?",opts:["3","5","7","10"],ans:1,exp:"5 warm-up pitches at the start of the game. 3 per inning thereafter."},
+{q:"What is the penalty for an extra unauthorized warm-up pitch?",opts:["Out to batter","Strike to batter","Ball to batter","No penalty"],ans:2,exp:"Every unauthorized extra warm-up pitch = Ball to the next batter's count!"},
+{q:"What is an Intentional Walk?",opts:["A bad pitch","The defensive team gives a Walk on purpose","4 regular Balls","A pitch to the base"],ans:1,exp:"Intentional Walk: announced by Pitcher, Catcher, or coach → batter goes to 1st!"},
+{q:"What is Leaping?",opts:["An illegal jump","A legal jump off the plate during delivery","Runner sprinting","Pitcher's throw"],ans:1,exp:"Leaping = Pitcher's foot leaves the plate during delivery — legal! Not a Crow Hop!"},
+{q:"What happens when the ball slips out of the Pitcher's hand mid-delivery?",opts:["No Pitch","Ball to batter","Strike to batter","Game stops"],ans:1,exp:"Dropped ball = Ball to batter. Ball is live — runners can run!"},
+{q:"What is a No Pitch?",opts:["A bad pitch","A delivery that's canceled and doesn't count","An unintentional pitch","A special strike"],ans:1,exp:"No Pitch = the delivery doesn't count! E.g. pitching while the game is paused."},
+{q:"What is the Strike Zone in softball?",opts:["Shoulders to ankles","Bottom of chest to bottom of knees","Waist to knees","Any ball above the plate"],ans:1,exp:"Strike Zone: bottom of the chest to bottom of the knee, over Home Plate!"},
+{q:"How many times can the Pitcher return to their role?",opts:["Once","Twice","No limit","Three times"],ans:2,exp:"No limit! As long as they haven't been removed or declared an Illegal Pitcher."},
+{q:"What makes a Pitcher an Illegal Pitcher?",opts:["Regular substitution","Exceeding conferences or repeated pitching violations","Losing a game","Injury"],ans:1,exp:"Illegal Pitcher: exceeding the defensive conference limit, or repeated pitching violations!"},
+{q:"What is the Pivot Foot?",opts:["The front foot","The foot touching the Pitcher's Plate","The back foot","Always the right foot"],ans:1,exp:"Pivot Foot = the foot touching the plate, used for the push-off!"},
+{q:"What happens when a Pitcher throws to a base while their foot is on the plate?",opts:["Allowed","Illegal Pitch","Out for runner","No Pitch"],ans:1,exp:"Pitcher can't throw to a base with their foot on the plate — Illegal Pitch!"},
+{q:"How many seconds does the Pitcher have to deliver?",opts:["10","15","20","30"],ans:2,exp:"The Pitcher must deliver within 20 seconds of receiving the ball!"},
+]},
+batting:{name:"Batting Rules",color:"#A78BFA",bg:"#2e1065",qs:[
+{q:"What happens with 3 Strikes?",opts:["Walk","Free base","Out!","Home Run"],ans:2,exp:"3 Strikes = Out! The batter is retired."},
+{q:"What is a Bunt?",opts:["A powerful hit","A jump from base","A gentle hit that makes the ball roll slowly","Ball that left the field"],ans:2,exp:"Bunt = a gentle hit. The ball rolls slowly inside the field."},
+{q:"What happens on a Home Run?",opts:["Only the batter scores","All runners + batter score","The game ends","The batter is out"],ans:1,exp:"Home Run: the batter + all runners on base all score!"},
+{q:"How many runs is a Grand Slam worth?",opts:["1","2","3","4"],ans:3,exp:"Grand Slam = Home Run with players on all 3 bases = 4 runs!"},
+{q:"What is a Foul Tip?",opts:["Ball that left the field","Ball that grazed the bat and was caught directly","A regular Foul Ball","Ball that hit the batter"],ans:1,exp:"Foul Tip = grazed the bat tip and flew to the Catcher's hands. Strike, ball live!"},
+{q:"What happens with 2 Strikes and then a Foul Ball?",opts:["Out","Extra Strike","Play continues","Ball"],ans:2,exp:"Foul + 2 Strikes = play continues. You can't strike out on a Foul Ball!"},
+{q:"What is a Dropped Third Strike?",opts:["Immediate Out","Batter can try running to first base","Extra Ball","Play continues normally"],ans:1,exp:"Catcher didn't catch Strike 3? Batter runs! Can try to reach 1st base!"},
+{q:"What is a Slap Hit?",opts:["A full swing","A short, quick hit that's not a Bunt","A special Bunt","A throw"],ans:1,exp:"Slap Hit = short, quick hit. Preferred by fast players!"},
+{q:"When is an Infield Fly called?",opts:["When all bases are loaded","High pop-up with runners on 1+2 and fewer than 2 Outs","When the Pitcher slides","In any situation"],ans:1,exp:"Infield Fly: pop-up + runners on bases 1 and 2 (or 1,2,3) + fewer than 2 Outs!"},
+{q:"What happens to a batter who hits the ball twice?",opts:["Extra Strike","Extra Ball","Out","Play continues"],ans:2,exp:"Double hit = Out! Unless the ball fell onto the bat in their hands."},
+{q:"What is Hit by Pitch?",opts:["Ball that hit the bat","Ball that hit the batter's body","Foul Ball","Strike"],ans:1,exp:"Hit by Pitch = ball hit the batter's body. Gets first base for free!"},
+{q:"What does RBI stand for?",opts:["Run Before Innings","Run Batted In","Really Big Impact","Random Base Idea"],ans:1,exp:"RBI = Run Batted In. How many times the batter caused runners to score!"},
+{q:"What is Batting Out of Order?",opts:["Hitting hard","A player batting when it's not their turn","Batting out of bounds","Hitting unintentionally"],ans:1,exp:"Batting Out of Order = player batting out of turn. Can be appealed!"},
+{q:"What happens to a batter who leaves the Batter's Box?",opts:["Immediate Out","Strike without a pitch","Ball","Play continues"],ans:1,exp:"Batter who left the Batter's Box = Strike, even without a pitch!"},
+{q:"What is a Grand Slam?",opts:["Home Run in extras","Home Run with runners on all 3 bases","First HR of the season","HR in a Tiebreaker"],ans:1,exp:"Grand Slam = Home Run with bases loaded = 4 runs at once!"},
+]},
+running:{name:"Base Running",color:"#F43F5E",bg:"#4c0519",qs:[
+{q:"What is a Stolen Base?",opts:["A stolen ball","Runner advances to next base without a hit","Special Home Run","Strike"],ans:1,exp:"Stolen Base: runner advances to the next base while the Pitcher delivers."},
+{q:"What is a Force Out?",opts:["A tag out","A putout when the runner must advance","A base jump","A Double Play"],ans:1,exp:"Force Out: runner must leave their base because the runner behind them is coming!"},
+{q:"What is a Tag Out?",opts:["An out at base","Fielder tags runner with the ball when runner is off base","A throw to base","A Double Play"],ans:1,exp:"Tag Out: fielder tags runner with the ball while the runner is not on a base."},
+{q:"What is a Double Play?",opts:["Two Home Runs","Two outs in one continuous action","Two runners on base","Two balls"],ans:1,exp:"Double Play = 2 Outs in one continuous action!"},
+{q:"What is a Tag Up?",opts:["Jumping on base","Touching base to start running after a caught Fly Ball","Getting out","Stealing a base"],ans:1,exp:"Tag Up: after a caught Fly Ball, must touch the base before advancing!"},
+{q:"How far from the Base Path can a runner stray?",opts:["0.5 meter","1 meter","2 meters","3 meters"],ans:1,exp:"Maximum 1 meter (3 feet) from the Base Path. More = Out!"},
+{q:"What is special about the Double Base?",opts:["It's bigger","Half in fair territory and half in foul territory","It's round","It's red"],ans:1,exp:"Double Base: half white (fielder) + half colored (batter). Prevents collision!"},
+{q:"What happens to a runner who left base before a Fly Ball was caught?",opts:["Scores a run","Out if the fielder makes an Appeal","Continues","Walk"],ans:1,exp:"Left base early on a Fly Ball? The fielder can Appeal and get them out!"},
+{q:"What is a Temporary Runner?",opts:["A permanent substitute","Sub for Catcher/Pitcher on base with 2 Outs","An injured player","A fast runner"],ans:1,exp:"Temporary Runner: substitutes for the Catcher or Pitcher on base with 2 Outs! Must be the player scheduled to bat last who is not currently on base."},
+{q:"What is the rule when two runners are on the same base?",opts:["Both are fine","First runner is entitled; second can be tagged","Both are out","First there = Out"],ans:1,exp:"Two runners on same base: the runner who arrived first is entitled to the base!"},
+{q:"What is an Over-Slide?",opts:["Running too far","Sliding past the base and losing contact","Stepping on base","A running mistake"],ans:1,exp:"Over-Slide = sliding too far + losing contact with the base. Runner may be put out!"},
+{q:"What is Obstruction?",opts:["Fielder tagging runner","Fielder blocks runner without the ball","Runner blocks fielder","Ball blocking path"],ans:1,exp:"Obstruction: fielder blocks runner when they don't have the ball = extra base for runner!"},
+{q:"What is a Triple Play?",opts:["3 Home Runs","Three outs in one continuous action","A triple hit","3 Stolen Bases"],ans:1,exp:"Triple Play = 3 Outs in one action. Very rare!"},
+{q:"What happens to a runner who touches a batted ball?",opts:["Scores","Out if no fielder touched it first","Continues","Ball"],ans:1,exp:"Runner who touches a ball no fielder touched first = Out!"},
+{q:"What is a Base Path?",opts:["An entrance path","The direct path between two bases","Field boundary","Path to the batter"],ans:1,exp:"Base Path = direct path between two bases. Can't deviate more than a meter!"},
+]},
+fieldequip:{name:"Field & Equipment",color:"#60A5FA",bg:"#1a2744",qs:[
+{q:"What's special about a ball hitting the Foul Pole?",opts:["Foul Ball","Home Run!","Single","Dead Ball"],ans:1,exp:"Ball hitting the Foul Pole = Home Run! The pole itself is in fair territory!"},
+{q:"What are the dimensions of the Pitcher's Plate?",opts:["30×10 cm","61×15 cm","45×20 cm","50×12 cm"],ans:1,exp:"Pitcher's Plate = 61 cm long × 15 cm wide. White rubber!"},
+{q:"What is the purpose of the Warning Track?",opts:["Base boundary","Warns fielder the fence is near","Marks the Foul Line","Player substitution area"],ans:1,exp:"Warning Track = gravel strip before the fence. Warning: fence is near!"},
+{q:"What is the Pitcher's Circle?",opts:["The Pitcher's base","4.88m circle around the plate","Warm-up area","Strike Zone boundary"],ans:1,exp:"Pitcher's Circle: when Pitcher is inside with the ball, runners must decide — advance or retreat!"},
+{q:"What is the Infield?",opts:["The whole field","The fair territory area covered by infielders","The outfield area","Area behind the bases"],ans:1,exp:"Infield = the diamond + the area covered by infielders."},
+{q:"What is the maximum length of a bat?",opts:["80 cm","86.4 cm","90 cm","100 cm"],ans:1,exp:"Bat: maximum 86.4 cm (34 inches) long!"},
+{q:"What is an Altered Bat?",opts:["A new bat","A bat modified from its original structure — illegal!","A warm-up bat","An approved bat"],ans:1,exp:"Altered Bat = modified bat. Completely illegal! The batter using it is ejected!"},
+{q:"Who must wear a helmet with 2 ear flaps?",opts:["Only the Pitcher","Every fielder","Batters, batter-runners, and runners","Only the Catcher"],ans:2,exp:"Batters, batter-runners, and runners — all must wear a helmet with 2 ear flaps!"},
+{q:"A ball that landed exactly on the Foul Line — Fair or Foul?",opts:["Foul","Fair","Depends on umpire","Dead Ball"],ans:1,exp:"Ball on the Foul Line = Fair Ball! The line is part of fair territory!"},
+{q:"What is the Outfield?",opts:["Area near the bases","Large area beyond the infield to the fence","Area behind home plate","The whole field"],ans:1,exp:"Outfield = large area beyond the Infield. 3 players defend it!"},
+{q:"What is special about the Double Base?",opts:["It's bigger","Half white in fair + half colored in foul territory","It's taller","It's round"],ans:1,exp:"Double Base: batter touches the colored half, fielder the white. Prevents collision!"},
+{q:"What is the diameter of the Pitcher's Circle?",opts:["3 meters","4.88 meters","2 meters","6 meters"],ans:1,exp:"Pitcher's Circle = 4.88 meter diameter (2.44m radius) around the plate!"},
+{q:"What is the difference between a Glove and a Mitt?",opts:["No difference","A Mitt has no finger slots","A Mitt is smaller","Glove is for Catcher only"],ans:1,exp:"Mitt = glove without finger slots. Deeper for catching! Only for Catcher and First Baseman!"},
+{q:"Which bat is forbidden to use?",opts:["Wooden bat","Metal bat","Altered Bat — a modified bat","A short bat"],ans:2,exp:"Altered Bat = bat modified from original. Illegal! The batter is ejected!"},
+{q:"What is Home Plate?",opts:["First base","A five-sided plate the runner must touch to score","Second base","Only the Strike Zone boundary"],ans:1,exp:"Home Plate = white five-sided plate. Runner must touch it to score a run!"},
+]},
+umpires:{name:"Umpires & Rules",color:"#38BDF8",bg:"#0c2340",qs:[
+{q:"What is the role of the Plate Umpire?",opts:["Base umpire","Decides Balls, Strikes, Fair, Foul","Head umpire only","Field boundary umpire"],ans:1,exp:"Plate Umpire stands behind the Catcher. Decides Balls, Strikes, Fair, Foul!"},
+{q:"Who may file an official Protest?",opts:["Any player","Only the captain","The head coach only","All coaches"],ans:2,exp:"Only the head coach can file an official Protest!"},
+{q:"What can you Protest?",opts:["Any umpire decision","A fielding error","Incorrect interpretation of a rule","A Ball/Strike call"],ans:2,exp:"Protest = incorrect rule interpretation only. Not umpire judgment!"},
+{q:"What does 'Time' mean?",opts:["Start playing","Stop the game","Substitute a player","Victory"],ans:1,exp:"'Time' = stop the game. Ball is dead — nobody can run!"},
+{q:"What does 'Play Ball' mean?",opts:["Stop","Start/resume playing","Substitute a player","Victory"],ans:1,exp:"'Play Ball' = start or resume the game. Ball is live!"},
+{q:"Can you appeal a Fair/Foul call?",opts:["Yes, always","No — it's umpire judgment","Only in first 3 seconds","Only in playoffs"],ans:1,exp:"Fair/Foul = umpire judgment. Cannot be appealed!"},
+{q:"What is an Appeal Play?",opts:["Coach visit","Request for umpire to rule on a missed violation","Official protest","Player substitution"],ans:1,exp:"Appeal Play: umpire can't rule alone — defensive team must request it!"},
+{q:"How many Defensive Conferences are allowed in 7 innings?",opts:["1","2","3","5"],ans:2,exp:"3 defensive conferences are allowed in 7 innings."},
+{q:"What happens when a coach exceeds the allowed conferences?",opts:["Warning","Pitcher must leave the field","Walk to batter","Out"],ans:1,exp:"Coach who exceeds the conference limit → Pitcher must leave the field!"},
+{q:"What is an Ejection?",opts:["Player injury","Player/coach removed from the game","Player substitution","Medical visit"],ans:1,exp:"Ejection = removed! Player/coach must leave the field immediately!"},
+{q:"What is an Unreported Substitution?",opts:["An injured player","Player who entered without reporting to umpire","A late player","A player who quit"],ans:1,exp:"Unreported Sub = entering without telling the umpire. Rule violation!"},
+{q:"What happens to an ejected player who returns to the field?",opts:["A fine","Player is disqualified","Forfeit for their team","A warning"],ans:2,exp:"Ejected player who returns = Forfeit! Their team loses 7-0!"},
+]},
+scoring:{name:"Scoring & Strategy",color:"#FCD34D",bg:"#2a1a00",qs:[
+{q:"How do you score a Run?",opts:["Reaching base 2","Reaching base 3","Touching Home Plate","Any hit"],ans:2,exp:"Run = touching Home Plate after passing through all the bases!"},
+{q:"What is a Single?",opts:["Home Run","Reaching 1st base on a hit","Bunt","Walk"],ans:1,exp:"Single = reaching first base on a fair hit. ♦"},
+{q:"What is a Double?",opts:["2 Home Runs","Reaching 2nd base on a hit","A double Bunt","Two Walks"],ans:1,exp:"Double = reaching second base on a fair hit. ♦♦"},
+{q:"What is a Triple?",opts:["3 Home Runs","Reaching 3rd base on a hit","3 Walks","3 Stolen Bases"],ans:1,exp:"Triple = reaching third base on a fair hit. ♦♦♦ Rare!"},
+{q:"How many runs is a Grand Slam worth?",opts:["1","2","3","4"],ans:3,exp:"Grand Slam = 4 runs! Home Run with runners on all 3 bases!"},
+{q:"What is a Sacrifice Fly?",opts:["Foul Ball","Caught fly ball where runner from 3rd scores","Home Run","Walk"],ans:1,exp:"Sacrifice Fly = ball caught in the air but brings in a run from third base!"},
+{q:"What is the Run Ahead Rule (Mercy Rule)?",opts:["Minimum scoring rule","Early end with a large run lead","Extra inning rule","Playoff rule only"],ans:1,exp:"Mercy Rule = game ends early when the run difference is very large."},
+{q:"What is ERA?",opts:["Average run per player","Pitcher's average earned runs allowed per 7 innings","RBI measure","Fielding errors"],ans:1,exp:"ERA = Earned Run Average. Pitching quality measure. Lower is better!"},
+{q:"What is a Fielding Error?",opts:["Hit that beat a fielder","Fielding mistake that let batter/runner advance","Foul Ball","Strike"],ans:1,exp:"Error = fielding mistake. Not counted as a Hit, but runner advances!"},
+{q:"What's the difference between an Earned Run and an Unearned Run?",opts:["No difference","Earned = no errors; Unearned = due to errors","Earned = Home Run only","Unearned = Walk only"],ans:1,exp:"Earned Run = no errors involved. Unearned Run = created by a field Error!"},
+{q:"What is a Walk-off Win?",opts:["A championship win","Winning run scored in last bottom half inning","Win in Extra Innings","Win by Forfeit"],ans:1,exp:"Walk-off = home team scores the winner at the end — most dramatic in softball!"},
+{q:"What is considered a good batting average?",opts:[".100",".200",".300+",".500"],ans:2,exp:"Batting average of .300 or higher is considered excellent in softball!"},
+]},
+};
+
+// Populate "all"
+QD.all={name:"All Topics 🌟",color:"#FCD34D",bg:"#1a1200",qs:[]};
+['basics','positions','pitching','batting','running','fieldequip','umpires','scoring'].forEach(k=>QD[k].qs.forEach(q=>QD.all.qs.push(q)));
+
+const QUIZ_MENU_ORDER=[
+{key:'all',icon:'🌟'},{key:'basics',icon:'🏟️'},{key:'positions',icon:'👥'},
+{key:'pitching',icon:'🎯'},{key:'batting',icon:'🏏'},{key:'running',icon:'🏃'},
+{key:'fieldequip',icon:'⚙️'},{key:'umpires',icon:'⚖️'},{key:'scoring',icon:'🏆'}
+];
+
+const FIELD_POS=[
+{id:"cf",label:"CF",cx:180,cy:52,name:"Center Fielder",heb:"Middle Outfield",desc:"Guards center field. Usually the fastest player on the team — covers the most ground of any position!"},
+{id:"lf",label:"LF",cx:84,cy:84,name:"Left Fielder",heb:"Left Side Outfield",desc:"Guards the left side of the outfield. Usually throws to Third Base to stop advancing runners."},
+{id:"rf",label:"RF",cx:276,cy:84,name:"Right Fielder",heb:"Right Side Outfield",desc:"Guards the right side of the outfield. Often throws to First Base for quick putouts."},
+{id:"ss",label:"SS",cx:126,cy:133,name:"Shortstop",heb:"Between 2nd & 3rd",desc:"Guards between bases 2 and 3. Usually considered the most important and skilled fielder on the team!"},
+{id:"2b",label:"2B",cx:228,cy:133,name:"Second Baseman",heb:"Second Base Guard",desc:"Guards the area around second base on the right side. Partners with the Shortstop for double plays!"},
+{id:"3b",label:"3B",cx:82,cy:170,name:"Third Baseman",heb:"The Hot Corner",desc:"Guards the 'Hot Corner'. Receives the hardest-hit balls and needs lightning-fast reflexes!"},
+{id:"1b",label:"1B",cx:277,cy:170,name:"First Baseman",heb:"First Base Guard",desc:"Guards first base. Only the First Baseman and Catcher may use a Mitt (no finger slots)!"},
+{id:"p",label:"P",cx:180,cy:163,name:"Pitcher",heb:"The Thrower",desc:"Delivers the ball underhand toward the batter. Stands on the Pitcher's Plate — the most important defensive player!"},
+{id:"c",label:"C",cx:180,cy:222,name:"Catcher",heb:"Behind the Plate",desc:"Catches pitches behind Home Plate. Must wear full protective gear: helmet, mask, chest protector & shin guards!"},
+];
+
+let curCat=null,cardIdx=0,isFlipped=false;
+let quizPool=[],quizIdx=0,quizScore=0,quizSelected=null,curQuizKey=null;
+let curField=null;
+const QPQ=15;
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const s=document.getElementById(id);
+  s.classList.add('active');
+  s.classList.remove('fade-in');
+  requestAnimationFrame(()=>s.classList.add('fade-in'));
+}
+
+function buildCategories(){
+  document.getElementById('catGrid').innerHTML=CATS.map(c=>`
+    <button class="cat-card" onclick="openCategory('${c.id}')" style="background:${c.bg};border:2px solid ${c.accent}40">
+      <span class="cat-icon">${c.icon}</span>
+      <span class="cat-name" style="color:${c.accent}">${c.name}</span>
+      <span class="cat-sub" style="color:${c.accent}99">${c.sub}</span>
+      <span class="cat-count">${c.cards.length} flashcards</span>
+    </button>`).join('');
+  const total=CATS.reduce((a,c)=>a+c.cards.length,0);
+  document.getElementById('homeFooter').textContent=`${total} flashcards · ${QD.all.qs.length} quiz questions · 9 positions`;
+}
+
+function openCategory(id){curCat=CATS.find(c=>c.id===id);cardIdx=0;isFlipped=false;renderCard();showScreen('learn');}
+
+function renderCard(){
+  const card=curCat.cards[cardIdx];
+  document.getElementById('learnCatName').textContent=curCat.icon+' '+curCat.name;
+  document.getElementById('learnCatSub').textContent=curCat.sub;
+  document.getElementById('learnCounter').textContent=`${cardIdx+1} / ${curCat.cards.length}`;
+  document.getElementById('learnProgress').innerHTML=curCat.cards.map((_,i)=>
+    `<div class="prog-dot${i<cardIdx?' done':i===cardIdx?' current':''}"></div>`).join('');
+  const badge=document.getElementById('cardTerm');
+  badge.textContent=card.term;badge.style.background=curCat.accent;
+  document.getElementById('cardHeb').textContent=card.heb;
+  const back=document.getElementById('cardBack');
+  back.style.background=curCat.bg;
+  back.innerHTML=`<div class="back-term" style="background:rgba(255,255,255,.12)">${card.term} — ${card.heb}</div><div class="back-def">${card.def}</div><div class="back-example"><div class="back-example-label">Example:</div><p>${card.ex}</p></div>`;
+  document.getElementById('flipBtnColor').style.background=curCat.accent;
+  isFlipped=false;document.getElementById('flipInner').classList.remove('flipped');
+  const fc=document.getElementById('flipCard');fc.classList.remove('pop');requestAnimationFrame(()=>fc.classList.add('pop'));
+}
+
+function flipCard(){isFlipped=!isFlipped;document.getElementById('flipInner').classList.toggle('flipped',isFlipped);}
+function moveCard(dir){cardIdx=(cardIdx+dir+curCat.cards.length)%curCat.cards.length;renderCard();}
+
+function buildQuizMenu(){
+  document.getElementById('quizMenuGrid').innerHTML=QUIZ_MENU_ORDER.map(item=>{
+    const d=QD[item.key];const n=d.qs.length;const take=Math.min(n,QPQ);
+    return `<button class="qmenu-card" onclick="startQuiz('${item.key}')" style="background:${d.bg};border:1.5px solid ${d.color}40">
+      <span class="qmenu-icon">${item.icon}</span>
+      <span class="qmenu-info"><span class="qmenu-name" style="color:${d.color}">${d.name}</span><span class="qmenu-count">${take} random questions from ${n}</span></span>
+      <span class="qmenu-arrow" style="color:${d.color}">→</span>
+    </button>`;
+  }).join('');
+}
+
+function shuffle(arr){return[...arr].sort(()=>Math.random()-.5);}
+
+function startQuiz(key){
+  curQuizKey=key;quizPool=shuffle(QD[key].qs).slice(0,QPQ);
+  quizIdx=0;quizScore=0;quizSelected=null;renderQuizQ();showScreen('quiz');
+}
+
+function restartSameTopic(){startQuiz(curQuizKey);}
+
+function renderQuizQ(){
+  const q=quizPool[quizIdx];
+  document.getElementById('quizProgress').textContent=`Question ${quizIdx+1} of ${quizPool.length}`;
+  document.getElementById('quizScore').textContent=`✓ ${quizScore}`;
+  document.getElementById('quizProgressBar').innerHTML=quizPool.map((_,i)=>
+    `<div class="prog-dot${i<quizIdx?' done':i===quizIdx?' current':''}"></div>`).join('');
+  document.getElementById('quizQ').textContent=q.q;
+  document.getElementById('quizOpts').innerHTML=q.opts.map((o,i)=>
+    `<button class="quiz-opt" id="opt${i}" onclick="answerQuiz(${i})"><span class="opt-icon" id="optIcon${i}">⬜</span>${o}</button>`).join('');
+  const fb=document.getElementById('quizFeedback');fb.classList.remove('show','good','bad');quizSelected=null;
+  const qc=document.getElementById('quizQCard');qc.classList.remove('fade-in');requestAnimationFrame(()=>qc.classList.add('fade-in'));
+}
+
+function answerQuiz(i){
+  if(quizSelected!==null)return;quizSelected=i;
+  const q=quizPool[quizIdx];const correct=i===q.ans;if(correct)quizScore++;
+  for(let k=0;k<q.opts.length;k++){
+    const el=document.getElementById(`opt${k}`);const ic=document.getElementById(`optIcon${k}`);
+    if(k===q.ans){el.classList.add('correct');ic.textContent='✅';}
+    else if(k===i&&!correct){el.classList.add('wrong');ic.textContent='❌';}
+    else{el.classList.add('plain');ic.textContent='⬜';}
+  }
+  document.getElementById('fbTitle').textContent=correct?'🎉 Excellent! Correct!':'💡 Not quite! Here\'s the explanation:';
+  document.getElementById('fbTitle').style.color=correct?'#86EFAC':'#93C5FD';
+  document.getElementById('fbExp').textContent=q.exp;
+  const btn=document.getElementById('fbNext');
+  btn.textContent=quizIdx+1<quizPool.length?'Next Question →':'See Results! 🏆';
+  btn.style.background=correct?'#16A34A':'#1D4ED8';
+  const fb=document.getElementById('quizFeedback');fb.classList.add('show',correct?'good':'bad');
+  document.getElementById('quizScore').textContent=`✓ ${quizScore}`;
+  setTimeout(()=>fb.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+}
+
+function nextQuestion(){if(quizIdx+1>=quizPool.length){showResult();return;}quizIdx++;renderQuizQ();}
+
+function showResult(){
+  const pct=quizScore/quizPool.length;
+  document.getElementById('resultIcon').textContent=pct>=.8?'🏆':pct>=.5?'⭐':'💪';
+  document.getElementById('resultTitle').textContent=pct>=.8?'Amazing! Softball Champion!':pct>=.5?'Great job! Keep improving!':'Try again — you\'ve got this!';
+  document.getElementById('resultScore').textContent=`${quizScore} / ${quizPool.length}`;
+  const bar=document.getElementById('resultBar');bar.style.width='0%';
+  bar.style.background=pct>=.8?'#22C55E':pct>=.5?'#F59E0B':'#EF4444';
+  showScreen('result');setTimeout(()=>{bar.style.width=(pct*100)+'%';},80);
+}
+
+function buildField(){
+  document.getElementById('fieldDots').innerHTML=FIELD_POS.map(p=>`
+    <g onclick="selectFieldPos('${p.id}')" style="cursor:pointer">
+      <circle id="fc_${p.id}" cx="${p.cx}" cy="${p.cy}" r="14" fill="#1D4ED8" stroke="#fff" stroke-width="2" style="transition:all .2s"/>
+      <text x="${p.cx}" y="${p.cy+1}" text-anchor="middle" dominant-baseline="central" style="font-size:9px;font-weight:700;fill:#fff;font-family:'Nunito',sans-serif;pointer-events:none">${p.label}</text>
+    </g>`).join('');
+}
+
+function selectFieldPos(id){
+  if(curField){const p=document.getElementById(`fc_${curField}`);if(p){p.setAttribute('fill','#1D4ED8');p.setAttribute('r','14');}}
+  curField=id;
+  const dot=document.getElementById(`fc_${id}`);if(dot){dot.setAttribute('fill','#FCD34D');dot.setAttribute('r','17');}
+  const pos=FIELD_POS.find(p=>p.id===id);
+  document.getElementById('fieldNameBadge').textContent=pos.name;
+  document.getElementById('fieldHeb').textContent=pos.heb;
+  document.getElementById('fieldDesc').textContent=pos.desc;
+  document.getElementById('fieldInfo').classList.remove('hidden');
+  document.getElementById('fieldHint').style.display='none';
+}
+
+function clearFieldInfo(){
+  if(curField){const p=document.getElementById(`fc_${curField}`);if(p){p.setAttribute('fill','#1D4ED8');p.setAttribute('r','14');}curField=null;}
+  document.getElementById('fieldInfo').classList.add('hidden');document.getElementById('fieldHint').style.display='block';
+}
+
+const SITUATIONS=[
+{
+  badge:"Inning 3 · Runner on 1st",
+  scene:"There's a runner on first base. The batter hits a high pop-up to the infield with one out. The Shortstop can easily catch it.",
+  q:"What will happen?",
+  opts:["Umpire calls Infield Fly — batter is automatically out, runners are free","The batter must run to first base","The runner must run to second base","Nothing special — regular play"],
+  ans:0,
+  explain:"When there are runners on bases 1 and 2 (or 1, 2, and 3) with fewer than 2 Outs, the umpire calls Infield Fly — the batter is automatically out, even if the ball drops! Runners don't have to run.",
+  rule:"Rule: Infield Fly Rule"
+},
+{
+  badge:"Inning 5 · Bases Loaded",
+  scene:"Players on all bases. 1 out. The batter hits a high fly ball to the outfield. The Left Fielder catches the ball.",
+  q:"What can the runner from third base do?",
+  opts:["Run immediately when the ball is hit","Wait until the ball is caught, touch 3rd base, then run home","Not run at all — counts as Out","Run only if the Catcher misses"],
+  ans:1,
+  explain:"Tag Up: after the ball is caught, the runner must return and touch their base before advancing. If they tagged up and reach Home before the throw — it's a run!",
+  rule:"Rule: Tag Up / Sacrifice Fly"
+},
+{
+  badge:"Inning 2 · Runner on 1st",
+  scene:"A runner tried to steal second base during the pitch. The Catcher caught and threw to second to put out the runner. The runner arrived at exactly the same time as the ball.",
+  q:"What does the umpire decide?",
+  opts:["Always Out — the ball arrived first","Always Safe — the runner arrived first","Safe! When in doubt, always favor the runner","Out! When in doubt, always favor the defense"],
+  ans:2,
+  explain:"In softball (and baseball), when it's hard to decide, the Tie goes to the runner: doubt favors the runner — Safe!",
+  rule:"Principle: Tie goes to the runner"
+},
+{
+  badge:"Inning 1 · No runners",
+  scene:"The batter has 2 Strikes and 1 Ball. The Pitcher delivers, the batter swings and misses — and the Catcher drops the ball.",
+  q:"What happens?",
+  opts:["Out immediately — 3 Strikes","The batter runs to first base! Dropped Third Strike","Ball — count goes to 2","Play continues, no change"],
+  ans:1,
+  explain:"Dropped Third Strike: if the Catcher doesn't catch Strike 3, the batter can try to run to first base! The batter is only out if the Catcher touches first base before them.",
+  rule:"Rule: Dropped Third Strike"
+},
+{
+  badge:"Inning 4 · Tied game",
+  scene:"End of the 7th inning, tied 3-3. Starting Tiebreaker.",
+  q:"In what position does each team start the 8th inning?",
+  opts:["No runners — regular game","With a runner on 1st base","With a runner on 2nd base","With a runner on 3rd base"],
+  ans:2,
+  explain:"Tiebreaker from inning 8: each team starts with a runner on second base! This increases tension and scoring chances.",
+  rule:"Rule: Tiebreaker Inning"
+},
+{
+  badge:"Inning 6 · Runner on 2nd",
+  scene:"Runner on 2nd base. The Pitcher has the ball and stands inside the Pitcher's Circle. The runner stands between bases and isn't deciding.",
+  q:"What will happen?",
+  opts:["The runner can stand there as long as they want","The runner must decide — advance or retreat. If not, Out!","The Pitcher must pitch","There's no rule about this"],
+  ans:1,
+  explain:"When the Pitcher is in the circle with the ball, the runner must decide — return to their base or advance to the next one. Hesitating = Out!",
+  rule:"Rule: Pitcher's Circle Rule"
+},
+{
+  badge:"Inning 3 · Runners on 1st & 2nd",
+  scene:"Runners on 1st and 2nd. The batter hits a fair ball to the infield. The Shortstop catches the ball.",
+  q:"Must the runner from 1st base run to 2nd?",
+  opts:["Yes — Force Out, must advance","No — can stay put","Only with 2 Outs","Only if it was a Fly Ball"],
+  ans:0,
+  explain:"Force Out: when the batter hits a fair ball, all runners who have a runner behind them must advance. The runner from 1st must make room for the batter!",
+  rule:"Rule: Force Out"
+},
+{
+  badge:"Inning 5 · No runners",
+  scene:"The batter is standing outside the Batter's Box when the Pitcher throws. The ball passes through the Strike Zone.",
+  q:"What happens?",
+  opts:["Ball — the batter wasn't inside the lines","Strike — the ball passed through the zone","Immediate Out","Game stops"],
+  ans:1,
+  explain:"Even if the batter stood outside the Batter's Box, if the ball passed through the Strike Zone — Strike! And if the batter tried to swing while outside — also Strike.",
+  rule:"Rule: Batter's Box"
+},
+{
+  badge:"Inning 2 · Runner on 3rd",
+  scene:"Runner on 3rd. 2 Outs. The batter hits a ball that the First Baseman stops, but throws to 1st and misses. The ball goes out of play.",
+  q:"Where does the runner from 3rd end up?",
+  opts:["Crosses Home Plate and scores a run","Stays on 3rd base","Gets one base — reaches Home","Waits for Dead Ball and doesn't advance"],
+  ans:0,
+  explain:"A ball leaving the field of play (Overthrow) = Dead Ball. Runners get 2 bases from their position when the ball was released. The runner from 3rd will reach Home!",
+  rule:"Rule: Overthrow — 2 Bases"
+},
+{
+  badge:"Inning 4 · No runners · 1 Strike",
+  scene:"The batter receives what looked like a Foul Ball caught directly in the Catcher's hand — the ball only grazed the tip of the bat.",
+  q:"What does this count as?",
+  opts:["Regular Foul Ball — only a Strike, ball dead","Foul Tip — Strike, ball live!","Out — the Catcher caught it!","Ball"],
+  ans:1,
+  explain:"Foul Tip: a ball that grazes the tip of the bat and flies directly into the Catcher's hands. It's a Strike and the ball is live — runners can run! Different from a regular Foul Ball!",
+  rule:"Rule: Foul Tip vs Foul Ball"
+},
+{
+  badge:"Inning 6 · Runner on 1st",
+  scene:"The Second Baseman stands in the runner's path to catch a ball — but the ball is still in the air and not in their hands.",
+  q:"What happens?",
+  opts:["Runner is out — must avoid the fielder","Obstruction! Runner gets an extra base","Runner must stop","No violation — fielder may stand anywhere"],
+  ans:1,
+  explain:"Obstruction: a fielder who blocks a runner without having the ball. Violation! The runner gets at least one extra base beyond what they had.",
+  rule:"Rule: Obstruction"
+},
+{
+  badge:"Inning 1 · Bases loaded",
+  scene:"Bases loaded! The batter interferes with the Catcher trying to catch a dropped ball and throw to a base.",
+  q:"What happens?",
+  opts:["No violation — the batter is always protected at Home","Interference! Batter is out","Ball to the batter","Runner from 3rd is out"],
+  ans:1,
+  explain:"Interference: batter interferes with the Catcher = immediate Out! And if the runner from 3rd had already started running — they return to their base too.",
+  rule:"Rule: Batter Interference"
+},
+{
+  badge:"Inning 3 · No runners",
+  scene:"The batter hits a ball that lands exactly on the Foul Line — not outside it and not inside it.",
+  q:"Fair Ball or Foul Ball?",
+  opts:["Foul Ball — the line is the boundary","Fair Ball — the line is part of fair territory","Depends on the umpire","Dead Ball"],
+  ans:1,
+  explain:"The line itself is Fair! A ball touching the Foul Line = Fair Ball. The Foul Pole is also Fair — a ball hitting it = Home Run!",
+  rule:"Rule: Fair/Foul Ball"
+},
+{
+  badge:"Inning 7 · 2 Outs",
+  scene:"The batter was called out for the third out at first base, but before the Out was recorded — the runner from 3rd had already crossed Home Plate.",
+  q:"Does the run count?",
+  opts:["Yes — the runner reached Home before the Out","No — the third Out cancels runs scored during that action","Yes — only if it's not a Force Out","Depends on the umpire"],
+  ans:1,
+  explain:"The third Out cancels runs scored during that same action. If the third Out happened before the runner reached Home — no run.",
+  rule:"Rule: Timing of the Third Out"
+},
+{
+  badge:"Inning 5 · Runner on 2nd",
+  scene:"The runner from 2nd runs to 3rd. The Third Baseman catches the ball and tags the runner. The runner touches the base and the fielder simultaneously.",
+  q:"Safe or Out?",
+  opts:["Out — the fielder touched them","Safe — touching the base protects the runner","Depends who arrived first","Out — the Tie favors the defense"],
+  ans:1,
+  explain:"As long as the runner is touching the base — they're protected! The fielder can tag them all they want; if the runner is on the base they're Safe!",
+  rule:"Rule: Runner on Base is Safe"
+},
+{
+  badge:"Inning 2 · 0 Outs",
+  scene:"A team is leading by 16 runs after the bottom of the 3rd inning is complete.",
+  q:"What happens?",
+  opts:["Play continues until 7 innings","The game is over — Run Ahead Rule","Add 2 more innings","Question for the umpire"],
+  ans:1,
+  explain:"Run Ahead Rule (Mercy Rule): 15+ run lead after 3 complete innings = game over! Also 10 runs after 4 and 7 runs after 5.",
+  rule:"Rule: Run Ahead (Mercy) Rule"
+},
+{
+  badge:"Inning 4 · Runner on 1st",
+  scene:"A substitute player enters the field — but the coach forgot to report the change to the umpire.",
+  q:"What happens when the opponent notices?",
+  opts:["No penalty — it's forgotten","Unreported Substitution: the player is ejected","Out for the team","Opponent gets a Walk"],
+  ans:1,
+  explain:"Unreported Substitution = violation! The player who entered without reporting can be ejected. Must always notify the umpire of every substitution!",
+  rule:"Rule: Unreported Substitution"
+},
+{
+  badge:"Inning 6 · 2 Outs · Runner on 1st",
+  scene:"The batter swings and hits the ball. The ball hits them again while still in the Batter's Box (hits their hand).",
+  q:"What happens?",
+  opts:["Foul Ball — play continues","Out — double hit is illegal","Ball","Fair Ball — play continues"],
+  ans:1,
+  explain:"Double Hit = Out! Hitting the ball twice in one swing is illegal, unless the ball was resting on the bat in their hands.",
+  rule:"Rule: Double Hit"
+},
+{
+  badge:"Inning 1 · No runners",
+  scene:"The batter hits a ball that sails over the right fence. The ball hits the right Foul Pole and continues past it.",
+  q:"What is it?",
+  opts:["Foul Ball — went out of bounds","Home Run! The ball hit the Foul Pole which is Fair","Single — because it touched the pole","Dead Ball"],
+  ans:1,
+  explain:"The Foul Pole is Fair! Any ball that hits it is a Home Run, even though the pole is right on the boundary.",
+  rule:"Rule: Foul Pole = Home Run"
+},
+{
+  badge:"Inning 5 · Tiebreaker",
+  scene:"The defensive team's coach wants to stop the game and talk to the Pitcher — this is the fourth time he's done so this game.",
+  q:"What happens?",
+  opts:["Allowed — no limit on visits","The Pitcher must leave! Exceeded the conference limit","Ball to the batter","Out for the team"],
+  ans:1,
+  explain:"Only 3 defensive conferences are allowed in 7 innings. Exceeding = the Pitcher must leave the field! Even if the coach didn't want to replace them.",
+  rule:"Rule: Defensive Conference Limit"
+},
+];
+
+let sitPool=[], sitIdx=0, sitAnswered=[];
+
+function startSituations(){
+  sitPool=SITUATIONS.map((s,i)=>({...s,_i:i})).sort(()=>Math.random()-.5);
+  sitIdx=0; sitAnswered=new Array(sitPool.length).fill(null);
+  renderSituation(); showScreen('situations');
+}
+
+function renderSituation(){
+  const total=sitPool.length;
+  const answered=sitAnswered.filter(x=>x!==null).length;
+  document.getElementById('sitCounter').textContent=`${sitIdx+1} / ${total}`;
+  document.getElementById('sitSubtitle').textContent=`${answered} answered of ${total}`;
+  document.getElementById('sitProgressFill').style.width=`${(answered/total)*100}%`;
+  const sit=sitPool[sitIdx];
+  const alreadyAns=sitAnswered[sitIdx];
+  document.getElementById('sitArea').innerHTML=`
+    <div class="sit-card fade-in">
+      <div class="sit-badge">🎮 ${sit.badge}</div>
+      <div class="sit-scene"><div class="sit-scene-label">SITUATION ON FIELD</div><div class="sit-scene-text">${sit.scene}</div></div>
+      <div class="sit-question">${sit.q}</div>
+      <div class="sit-opts" id="sitOpts">
+        ${sit.opts.map((o,i)=>`<button class="sit-opt${alreadyAns!==null?(i===sit.ans?' correct':i===alreadyAns&&i!==sit.ans?' wrong':' plain'):''}" id="sopt${i}" onclick="answerSit(${i})">${o}</button>`).join('')}
+      </div>
+      <div class="sit-explain${alreadyAns!==null?' show':''}" id="sitExplain">
+        <div class="sit-explain-title">${alreadyAns!==null?(alreadyAns===sit.ans?'🎉 Correct!':'💡 The Right Answer:'):''}</div>
+        <div class="sit-explain-text">${sit.explain}</div>
+        <div class="sit-rule">📋 ${sit.rule}</div>
+      </div>
+      <div id="sitNavRow" style="display:${alreadyAns!==null?'flex':'none'};gap:10px;margin-top:14px">
+        <button class="nav-btn nav-prev" style="flex:1;padding:14px" onclick="moveSit(-1)" ${sitIdx===0?'disabled style="opacity:.4"':''}>← Previous</button>
+        <button class="nav-btn nav-next" style="flex:1;padding:14px;background:${alreadyAns===sit.ans?'#16A34A':'#1D4ED8'}" onclick="moveSit(1)">${sitIdx+1<total?'Next →':'Finish 🏆'}</button>
+      </div>
+    </div>
+    ${sitAnswered.filter(x=>x!==null).length===total?renderSitDone():''}
+  `;
+}
+
+function answerSit(i){
+  if(sitAnswered[sitIdx]!==null)return;
+  sitAnswered[sitIdx]=i;
+  renderSituation();
+  setTimeout(()=>{
+    const exp=document.getElementById('sitExplain');
+    if(exp) exp.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },100);
+}
+
+function moveSit(dir){
+  const total=sitPool.length;
+  sitIdx=Math.max(0,Math.min(total-1,sitIdx+dir));
+  renderSituation();
+  document.getElementById('sitArea').scrollTop=0;
+}
+
+function renderSitDone(){
+  const correct=sitAnswered.filter((a,i)=>a===sitPool[i].ans).length;
+  const total=sitPool.length;
+  const pct=correct/total;
+  const icon=pct>=.8?'🏆':pct>=.5?'⭐':'💪';
+  const title=pct>=.8?'Outstanding Field Manager!':pct>=.5?'Keep Practicing!':'Review the Rulebook!';
+  return `<div class="sit-done-box fade-in">
+    <div class="sit-done-icon">${icon}</div>
+    <div class="sit-done-title">${title}</div>
+    <div class="sit-done-score">${correct} / ${total}</div>
+    <div class="sit-done-of">Correct Answers</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="home-btn btn-orange" onclick="startSituations()"><span class="btn-icon">🔄</span><span>Play Again!</span></button>
+      <button class="home-btn btn-blue" onclick="showScreen('home')"><span class="btn-icon">🏠</span><span>Back to Menu</span></button>
+    </div>
+  </div>`;
+}
+
+const SITUATIONS_EASY=[
+{
+  badge:"⭐ Basic Question",
+  scene:"Sarah is standing at the plate waiting for the ball. The Pitcher throws. Sarah doesn't try to hit — the ball passes directly over the plate at the correct height.",
+  q:"What will the umpire call?",
+  opts:["Strike! 🎯","Ball!","Home Run!","Out!"],
+  ans:0,
+  explain:"When the ball passes over the plate at the correct height and isn't hit — it's a Strike! You need 3 Strikes to get an Out.",
+  rule:"Strike = ball that passed the correct height and wasn't hit"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"Joey is standing at the plate. The Pitcher throws, but the ball flies very high — far above his head. Joey doesn't swing.",
+  q:"What will the umpire call?",
+  opts:["Strike!","Ball! 🎈","Out!","Walk!"],
+  ans:1,
+  explain:"When the ball flies too high (or too low, or too wide) and you don't swing — it's a Ball! After 4 Balls, Joey gets to walk to first base for free.",
+  rule:"Ball = pitch that didn't pass at the correct height"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"Maya hit the ball hard! The ball flew and flew and flew... and went over the fence!",
+  q:"What is this called?",
+  opts:["Foul Ball","Strike","Home Run! 🏠💨","Out"],
+  ans:2,
+  explain:"Home Run! When the ball goes over the fence in fair territory — Maya runs through all the bases and scores a run! All runners on base also score.",
+  rule:"Home Run = ball over the fence = a run!"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"Jake hit the ball to the left — the ball landed outside the white lines of the field.",
+  q:"What is this called?",
+  opts:["Fair Ball","Foul Ball 🚫","Home Run","Strike"],
+  ans:1,
+  explain:"Foul Ball! When the ball lands outside the white lines — it's out of bounds. Jake bats again. It also counts as a Strike, but you can't strike out only on Foul Balls.",
+  rule:"Foul Ball = ball that landed outside the lines"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"Emma already has 2 Strikes and 3 Balls. The Pitcher throws again — this time the ball flies far from the plate.",
+  q:"What happens now?",
+  opts:["Out! 3 Strikes","Third Strike","Walk! Emma goes to 1st base 🚶‍♀️","Play continues"],
+  ans:2,
+  explain:"4 Balls = Walk! Emma walks to first base for free, without hitting! It's like a gift from the Pitcher 😄",
+  rule:"4 Balls = Walk = free first base!"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"The team already has 2 Outs. The next batter hits, the Shortstop catches the ball in the air and throws to first base.",
+  q:"How many Outs are there now?",
+  opts:["2 Outs","3 Outs — sides switch! 🔄","1 Out","4 Outs"],
+  ans:1,
+  explain:"3 Outs = sides switch! Now the fielding team goes to bat, and the batting team goes to field. Each inning is split into two turns.",
+  rule:"3 Outs = sides switch"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"Alex runs to first base. The fielder at first base catches the ball and touches the base before Alex arrives.",
+  q:"What happens to Alex?",
+  opts:["Safe! Alex is on base","Out! ❌ Alex goes back to wait for their turn","Walk","Gets another turn"],
+  ans:1,
+  explain:"Out! The ball arrived at the base before Alex — they're put out. Alex will have to wait for their next at-bat.",
+  rule:"Force Out = ball to base before runner = Out"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"Sofia is standing on first base. The batter hits a ball to the field. Sofia runs to second, but the fielder gets the ball and tags her before she arrives.",
+  q:"What happens to Sofia?",
+  opts:["Safe! She's on second base","Out! ❌ They tagged her with the ball","She gets an extra base","Play continues"],
+  ans:1,
+  explain:"Tag Out! When a fielder tags a runner with the ball while the runner is off base — the runner is out. Important to reach the base and stay on it!",
+  rule:"Tag Out = fielder tagged runner with ball = Out"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"Connor is on second base. The Pitcher holds the ball and stands inside the Pitcher's Circle. Connor stands right in the middle — not returning to base and not advancing.",
+  q:"What must Connor do?",
+  opts:["Stand there until the Pitcher pitches","Return to his base or run forward — must decide! 🏃","Shout at the Pitcher","Wait for the umpire"],
+  ans:1,
+  explain:"When the Pitcher is inside the circle with the ball — the runner must decide: return to their base or advance to the next. If they don't decide — Out!",
+  rule:"Pitcher's Circle = must decide!"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"Lily hit a high fly ball. The Left Fielder ran and ran and caught the ball before it hit the ground!",
+  q:"What happens to Lily?",
+  opts:["Lily is on first base","Out! ❌ Ball was caught in the air","Lily scores a run","Walk"],
+  ans:1,
+  explain:"When a fielder catches the ball before it touches the ground — the batter is out! This is called a Fly Out. Doesn't matter how high the ball was.",
+  rule:"Ball caught in the air = Out!"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"Ryan runs to third base. The Third Baseman stands in his way and blocks him — but the ball is still on its way and not with the fielder.",
+  q:"What will the umpire decide?",
+  opts:["Ryan is Out — must stop","Ryan gets an extra base! ⚠️ The fielder can't block","Play continues","Ryan returns to second base"],
+  ans:1,
+  explain:"Obstruction! A fielder can't block a runner when they don't have the ball. That's not fair! Ryan gets an extra base as a penalty.",
+  rule:"Blocking without ball = violation! Runner gets extra base"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"The game is tied! Inning 7 ends 4-4. Starting inning 8.",
+  q:"What's special about inning 8?",
+  opts:["Completely regular game","Each team starts with a runner on second base! 🏃","4 Outs each","The Pitcher is replaced"],
+  ans:1,
+  explain:"When the game is tied after 7 innings, extra innings are added: each team starts with a runner on second base! This increases tension and scoring chances.",
+  rule:"Tiebreaker = runner on 2nd from the start"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"Leah runs from first to second base. The fielder catches the ball and tags her, but Leah was already standing on second base.",
+  q:"What happens to Leah?",
+  opts:["Out — they tagged her","Safe! ✅ She's on base — protected!","Returns to first base","Walk"],
+  ans:1,
+  explain:"When a runner is on the base — they're completely protected! The fielder can tag them all they want; as long as the runner is on base they're Safe.",
+  rule:"On base = protected = Safe!"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"Tara stands at the plate. The Pitcher delivers, Tara tries to hit but completely misses.",
+  q:"What counts as this?",
+  opts:["Ball","Strike 🎯","Home Run","Out"],
+  ans:1,
+  explain:"Tara tried to hit and missed — it's a Strike! A Strike also happens when you don't swing and the ball passes at the correct height.",
+  rule:"Swing and a miss = Strike"
+},
+{
+  badge:"⭐ Basic Question",
+  scene:"Chloe hit a hard ball! The ball landed between the left fielder and center fielder. She ran fast to 1st base, then to 2nd base. The ball only arrived at 2nd after her.",
+  q:"What happens to Chloe?",
+  opts:["Out — the ball arrived","Safe! ✅ Chloe is on second base — this is called a Double!","Walk","She must run to 3rd base"],
+  ans:1,
+  explain:"Double! Chloe hit a fair ball and reached second base. That's a great hit! If she'd reached 3rd — Triple. Over the fence — Home Run!",
+  rule:"Reaching 2nd base from a hit = Double!"
+},
+];
+
+let sitEasyPool=[], sitEasyIdx=0, sitEasyAnswered=[];
+
+function startSituationsEasy(){
+  sitEasyPool=SITUATIONS_EASY.map((s,i)=>({...s,_i:i})).sort(()=>Math.random()-.5);
+  sitEasyIdx=0; sitEasyAnswered=new Array(sitEasyPool.length).fill(null);
+  renderSituationEasy(); showScreen('situations-easy');
+}
+
+function renderSituationEasy(){
+  const total=sitEasyPool.length;
+  const answered=sitEasyAnswered.filter(x=>x!==null).length;
+  document.getElementById('sitEasyCounter').textContent=`${sitEasyIdx+1} / ${total}`;
+  document.getElementById('sitEasySubtitle').textContent=`${answered} answered of ${total}`;
+  document.getElementById('sitEasyProgressFill').style.width=`${(answered/total)*100}%`;
+  const sit=sitEasyPool[sitEasyIdx];
+  const alreadyAns=sitEasyAnswered[sitEasyIdx];
+  document.getElementById('sitEasyArea').innerHTML=`
+    <div class="sit-card fade-in" style="border-color:rgba(244,114,182,.3)">
+      <div class="sit-badge" style="background:rgba(244,114,182,.15);border-color:rgba(244,114,182,.4);color:#F472B6">${sit.badge}</div>
+      <div class="sit-scene"><div class="sit-scene-label">WHAT'S HAPPENING?</div><div class="sit-scene-text" style="font-size:17px;line-height:1.85">${sit.scene}</div></div>
+      <div class="sit-question">${sit.q}</div>
+      <div class="sit-opts" id="sitEasyOpts">
+        ${sit.opts.map((o,i)=>`<button class="sit-opt${alreadyAns!==null?(i===sit.ans?' correct':i===alreadyAns&&i!==sit.ans?' wrong':' plain'):''}" id="seopt${i}" onclick="answerSitEasy(${i})" style="font-size:16px;padding:16px 18px">${o}</button>`).join('')}
+      </div>
+      <div class="sit-explain${alreadyAns!==null?' show':''}" id="sitEasyExplain">
+        <div class="sit-explain-title">${alreadyAns!==null?(alreadyAns===sit.ans?'🎉 Great job! Correct!':'💡 Not quite! Here\'s the explanation:'):''}</div>
+        <div class="sit-explain-text" style="font-size:15px">${sit.explain}</div>
+        <div class="sit-rule">📋 ${sit.rule}</div>
+      </div>
+      <div id="sitEasyNavRow" style="display:${alreadyAns!==null?'flex':'none'};gap:10px;margin-top:14px">
+        <button class="nav-btn nav-prev" style="flex:1;padding:14px" onclick="moveSitEasy(-1)" ${sitEasyIdx===0?'disabled style="opacity:.4"':''}>← Previous</button>
+        <button class="nav-btn nav-next" style="flex:1;padding:14px;background:${alreadyAns===sit.ans?'#16A34A':'#DB2777'}" onclick="moveSitEasy(1)">${sitEasyIdx+1<total?'Next →':'Finish 🌟'}</button>
+      </div>
+    </div>
+    ${sitEasyAnswered.filter(x=>x!==null).length===total?renderSitEasyDone():''}
+  `;
+}
+
+function answerSitEasy(i){
+  if(sitEasyAnswered[sitEasyIdx]!==null)return;
+  sitEasyAnswered[sitEasyIdx]=i;
+  renderSituationEasy();
+  setTimeout(()=>{
+    const exp=document.getElementById('sitEasyExplain');
+    if(exp)exp.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },100);
+}
+
+function moveSitEasy(dir){
+  const total=sitEasyPool.length;
+  sitEasyIdx=Math.max(0,Math.min(total-1,sitEasyIdx+dir));
+  renderSituationEasy();
+  document.getElementById('sitEasyArea').scrollTop=0;
+}
+
+function renderSitEasyDone(){
+  const correct=sitEasyAnswered.filter((a,i)=>a===sitEasyPool[i].ans).length;
+  const total=sitEasyPool.length;
+  const pct=correct/total;
+  const icon=pct>=.8?'🌟':pct>=.5?'⭐':'💪';
+  const title=pct>=.8?'Excellent! You\'re no longer a beginner!':pct>=.5?'Very good! Keep practicing!':'No worries — try again!';
+  return `<div class="sit-done-box fade-in">
+    <div class="sit-done-icon">${icon}</div>
+    <div class="sit-done-title">${title}</div>
+    <div class="sit-done-score">${correct} / ${total}</div>
+    <div class="sit-done-of">Correct Answers</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+      <button class="home-btn btn-pink" onclick="startSituationsEasy()"><span class="btn-icon">🔄</span><span>Play Again!</span></button>
+      <button class="home-btn btn-orange" onclick="startSituations()"><span class="btn-icon">🎮</span><span>Try the Advanced Mode!</span></button>
+      <button class="home-btn btn-blue" onclick="showScreen('home')"><span class="btn-icon">🏠</span><span>Back to Menu</span></button>
+    </div>
+  </div>`;
+}
+
+buildCategories();
+buildQuizMenu();
+buildField();
+</script>
+</body>
+</html>
