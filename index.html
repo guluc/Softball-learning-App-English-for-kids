@@ -150,6 +150,31 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .fade-in{animation:fadeUp .25s ease both}
 @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.05)}100%{transform:scale(1)}}
 .pop{animation:pop .22s ease}
+
+/* ===== COACH'S CORNER ===== */
+#coaches-corner{background:var(--bg)}
+.cc-tabs{display:flex;flex-direction:column;gap:10px;padding:4px 0}
+.cc-tab-btn{border:none;border-radius:16px;padding:16px 18px;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:14px;transition:transform .12s,opacity .12s;width:100%}
+.cc-tab-btn:active{transform:scale(.97);opacity:.9}
+.cc-tab-icon{font-size:26px;flex-shrink:0}
+.cc-tab-info{flex:1;text-align:left}
+.cc-tab-name{font-size:15px;font-weight:800;display:block}
+.cc-tab-desc{font-size:11px;opacity:.7;margin-top:2px;display:block}
+.cc-tab-arrow{font-size:18px;opacity:.6}
+#cc-rules,#cc-lifelessons,#cc-symbols,#cc-sayings,#cc-unwritten{background:var(--bg)}
+.cc-article{background:var(--card);border-radius:20px;padding:20px;margin-bottom:14px;border:1.5px solid rgba(255,255,255,.07)}
+.cc-article h3{font-size:16px;font-weight:800;color:var(--gold);margin-bottom:8px;line-height:1.4}
+.cc-article p{font-size:14px;color:#CBD5E1;line-height:1.75}
+.cc-article ul{font-size:14px;color:#CBD5E1;line-height:1.75;padding-left:18px;margin-top:6px}
+.cc-article ul li{margin-bottom:6px}
+.cc-intro{font-size:13px;color:var(--muted);line-height:1.7;background:rgba(255,255,255,.04);border-radius:14px;padding:14px 16px;margin-bottom:14px;border:1px solid rgba(255,255,255,.06)}
+.sym-table{width:100%;border-collapse:collapse;margin:0}
+.sym-table th{text-align:left;font-size:12px;color:var(--muted);font-weight:700;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.08);letter-spacing:.4px}
+.sym-table td{font-size:13px;color:#CBD5E1;padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:top}
+.sym-table td:first-child{font-weight:800;color:var(--gold);font-size:14px;white-space:nowrap;width:55px}
+.sym-table td:nth-child(2){font-weight:700;color:#F1F5F9;width:140px}
+.sym-note{font-size:12px;color:#60A5FA;font-style:italic;padding:8px 10px;background:rgba(59,130,246,.08);border-radius:8px;margin-top:4px}
+.sym-section-header{font-size:12px;font-weight:800;color:#F59E0B;letter-spacing:.8px;text-transform:uppercase;padding:12px 10px 6px;display:block}
 </style>
 </head>
 <body>
@@ -169,6 +194,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
       <button class="home-btn btn-orange" onclick="startSituations()"><span class="btn-icon">🎮</span><span>Game Situations — Advanced</span></button>
       <button class="home-btn btn-pink" onclick="startSituationsEasy()"><span class="btn-icon">⭐</span><span>Game Situations — Beginner</span></button>
       <button class="home-btn btn-blue" onclick="showScreen('field')"><span class="btn-icon">🏟️</span><span>Field Map</span></button>
+      <button class="home-btn btn-purple" onclick="showScreen('coaches-corner')"><span class="btn-icon">📋</span><span>Coach's Corner</span></button>
     </div>
     <div class="home-footer" id="homeFooter">Loading...</div>
   </div>
@@ -317,6 +343,259 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
     <div class="field-desc" id="fieldDesc"></div>
   </div>
   <div class="field-hint" id="fieldHint">Tap one of the 9 players 👆</div>
+</div>
+
+
+<!-- COACH'S CORNER main menu -->
+<div id="coaches-corner" class="screen">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('home')">←</button>
+    <div class="header-text"><h2>📋 Coach's Corner</h2><p>Wisdom from the dugout</p></div>
+  </div>
+  <div class="scroll-area">
+    <div class="cc-tabs">
+      <button class="cc-tab-btn" onclick="showScreen('cc-rules')" style="background:#172554;border:1.5px solid #3B82F640">
+        <span class="cc-tab-icon">📖</span>
+        <span class="cc-tab-info"><span class="cc-tab-name" style="color:#60A5FA">Rules You Should Know</span><span class="cc-tab-desc">Key rules every player must understand</span></span>
+        <span class="cc-tab-arrow" style="color:#3B82F6">→</span>
+      </button>
+      <button class="cc-tab-btn" onclick="showScreen('cc-lifelessons')" style="background:#052e16;border:1.5px solid #22C55E40">
+        <span class="cc-tab-icon">🌱</span>
+        <span class="cc-tab-info"><span class="cc-tab-name" style="color:#86EFAC">Life Lessons Softball Teaches</span><span class="cc-tab-desc">What the game gives you beyond the field</span></span>
+        <span class="cc-tab-arrow" style="color:#22C55E">→</span>
+      </button>
+      <button class="cc-tab-btn" onclick="showScreen('cc-symbols')" style="background:#1a2744;border:1.5px solid #60A5FA40">
+        <span class="cc-tab-icon">📊</span>
+        <span class="cc-tab-info"><span class="cc-tab-name" style="color:#BAE6FD">Symbols & Stats Explained</span><span class="cc-tab-desc">What all those numbers really mean</span></span>
+        <span class="cc-tab-arrow" style="color:#60A5FA">→</span>
+      </button>
+      <button class="cc-tab-btn" onclick="showScreen('cc-sayings')" style="background:#451a03;border:1.5px solid #F59E0B40">
+        <span class="cc-tab-icon">💬</span>
+        <span class="cc-tab-info"><span class="cc-tab-name" style="color:#FDE68A">Softball Sayings</span><span class="cc-tab-desc">The lingo of the diamond</span></span>
+        <span class="cc-tab-arrow" style="color:#F59E0B">→</span>
+      </button>
+      <button class="cc-tab-btn" onclick="showScreen('cc-unwritten')" style="background:#2e1065;border:1.5px solid #A78BFA40">
+        <span class="cc-tab-icon">🤝</span>
+        <span class="cc-tab-info"><span class="cc-tab-name" style="color:#DDD6FE">Softball's Unwritten Rules</span><span class="cc-tab-desc">Respect, tradition & the grey areas</span></span>
+        <span class="cc-tab-arrow" style="color:#A78BFA">→</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- CC: Rules You Should Know -->
+<div id="cc-rules" class="screen">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('coaches-corner')">←</button>
+    <div class="header-text"><h2>📖 Rules You Should Know</h2><p>Key rules every player must understand</p></div>
+  </div>
+  <div class="scroll-area">
+    <div class="cc-article">
+      <h3>The Infield Fly Rule</h3>
+      <p>When there are runners on first and second (or bases loaded) and less than two outs, an infield pop-up in fair territory results in the batter being an <strong>automatic out</strong>. Why? To protect runners from unfair double plays! It prevents an infield defender from dropping the ball "on purpose" in an attempt to deceive the runners and cause a potential double play.</p>
+    </div>
+    <div class="cc-article">
+      <h3>Ground-Rule Double</h3>
+      <p>Any ball hit into fair territory that bounces prior to going over the fence (any fence) is called a ground-rule double. The batter is awarded second base. If there are runners on base, each is awarded two bases from the base they started at!</p>
+    </div>
+    <div class="cc-article">
+      <h3>Home Run Foul Pole</h3>
+      <p>A batted ball that hits either of the two outfield foul poles <strong>is considered a home run</strong>! Don't let the name confuse you!</p>
+    </div>
+    <div class="cc-article">
+      <h3>Dropped 3rd Strike Rule</h3>
+      <p>A "called" third strike, or a third strike "swing &amp; miss," that is dropped by the catcher is not a strikeout! The dropped ball is considered live and in play. The batter has a chance to be safe if they beat the catcher's throw to first base. Conversely, the batter will be called out at first base should the catcher's throw beat the batter-runner to first.</p>
+    </div>
+    <div class="cc-article">
+      <h3>Re-entry Rule</h3>
+      <p>Any player in the starting lineup is allowed — one time only — to leave the game for a substitute and re-enter the game at a later time. As an amateur sport, the rule is intended to allow more people to participate while still offering a competitive environment.</p>
+      <p style="margin-top:10px;font-size:13px;color:#94A3B8">Example: The starting shortstop comes out for a pinch-hitter. At the end of the half-inning (or later), the shortstop re-enters and the pinch-hitter is removed.</p>
+    </div>
+    <div class="cc-article">
+      <h3>Runners Are Not Allowed to Pass Other Runners</h3>
+      <p>A runner on first base is not allowed to pass a teammate running ahead at second base. A batter is also prohibited from passing a runner on first base. If this occurs, the runner who passes someone in front of them is deemed out and all players must return to the base they were at when the play started.</p>
+    </div>
+    <div class="cc-article">
+      <h3>Catcher's Interference Rule</h3>
+      <p>A batter is allowed to swing the bat at any pitch without any interference from the opposing catcher. On occasion, a catcher will reach out towards the pitched ball and the glove will make contact with the bat. Upon this happening, the batter is awarded first base and any forced runners will advance!</p>
+    </div>
+  </div>
+</div>
+
+<!-- CC: Life Lessons -->
+<div id="cc-lifelessons" class="screen">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('coaches-corner')">←</button>
+    <div class="header-text"><h2>🌱 Life Lessons</h2><p>What softball gives you beyond the field</p></div>
+  </div>
+  <div class="scroll-area">
+    <div class="cc-article">
+      <h3>Strong Work Ethic</h3>
+      <p>Work ethic is the foundation for most things in life. The harder, the smarter you work at a given task the more you will find yourself in rewarding situations. A strong work ethic comes from the desire to be better today than you were the day before! Developing traits of succeeding through hard work on the softball field will often lead to better marks in school, opening the door to higher opportunities.</p>
+    </div>
+    <div class="cc-article">
+      <h3>Dealing With Pressure</h3>
+      <p>Every time you step up to the plate, the team is counting on you. Softball's intricate strategies offer high-dose "win and in" or "lose and out" situations. The lessons learned from managing pressure in softball help you manage emotions and improve focus on whatever the immediate task at hand might be — whether that's five final exams in six days or chasing a new job.</p>
+    </div>
+    <div class="cc-article">
+      <h3>Dealing with Failure</h3>
+      <p>Softball is a game of failure. The best hitters in the world hit safely 3.5 times out of ten — meaning they fail 65% of the time. The average hitter fails 80% of the time. The players who learn how to take positives out of shortcomings find success. Those who let the past cloud their ability to perform will often find a bumpy road ahead.</p>
+      <p style="margin-top:8px;font-size:13px;color:#94A3B8">"There are many times in life where we all come up a little short — being able to positively deal with the situation and learn from the past will help us in the future."</p>
+    </div>
+    <div class="cc-article">
+      <h3>Working as a Team</h3>
+      <p>The quicker you can mesh the strengths of others with yours, the better the overall product will be. Working as part of a team comes with responsibility and reliability. You are counting on others and others are relying on you. Leveraging individual strengths into a cohesive group working toward the same goal is much more beneficial than a group of individually-minded players.</p>
+    </div>
+    <div class="cc-article">
+      <h3>Working with Unfamiliar People</h3>
+      <p>Other than the classroom, a softball field is a great place to learn how to overcome shyness, apprehension, and self-consciousness. Year after year, players change teams and acquire new teammates. These communication skills learned early help when changing schools, jobs, or overcoming the fear of moving to a new place.</p>
+    </div>
+    <div class="cc-article">
+      <h3>Dealing with Success</h3>
+      <p>Play hard until the last out — and if victorious, be gracious and humble towards your opponent. There are no winners when making your opponents feel small. Bad winners have short memories, but losing teams keep receipts! In life as in sports, taking a humble approach towards others always puts you in a good light. You come off more likeable, approachable, and trustworthy.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CC: Symbols & Stats -->
+<div id="cc-symbols" class="screen">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('coaches-corner')">←</button>
+    <div class="header-text"><h2>📊 Symbols &amp; Stats</h2><p>What all those numbers really mean</p></div>
+  </div>
+  <div class="scroll-area">
+    <div class="cc-article" style="padding:14px">
+      <span class="sym-section-header">⚔️ Batting Stats</span>
+      <table class="sym-table">
+        <thead><tr><th>Symbol</th><th>Name</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>G</td><td>Games</td><td>How many games you have played in.</td></tr>
+          <tr><td>PA</td><td>Plate Appearance</td><td>How many times you have come to bat.</td></tr>
+          <tr><td>AB</td><td>At Bats</td><td>All plate appearances minus walks, hit by pitch, sacrifice bunt or sacrifice fly.</td></tr>
+          <tr><td colspan="3"><div class="sym-note">★ When calculating batting average, we use At Bats — not Plate Appearances.</div></td></tr>
+          <tr><td>R</td><td>Runs</td><td>How many times you have safely crossed home plate.</td></tr>
+          <tr><td>H</td><td>Hits</td><td>Total times you hit safely where no error was made by the defense.</td></tr>
+          <tr><td>2B</td><td>Double</td><td>How many times you hit safely and reached second base.</td></tr>
+          <tr><td>3B</td><td>Triple</td><td>How many times you hit safely and reached third base.</td></tr>
+          <tr><td>HR</td><td>Home Run</td><td>How many times you hit safely and touched all bases including home plate.</td></tr>
+          <tr><td>XBH</td><td>Extra Base Hits</td><td>Total of all doubles, triples and home runs.</td></tr>
+          <tr><td>K</td><td>Strikeout</td><td>Records all strikeouts for the batter.</td></tr>
+          <tr><td colspan="3"><div class="sym-note">★ A backwards "K" represents a called third strike — the batter didn't swing.</div></td></tr>
+          <tr><td>BB</td><td>Walk</td><td>Records the number of base on balls (walks) received.</td></tr>
+          <tr><td>SBA</td><td>Stolen Base Attempted</td><td>Records every stolen base attempt.</td></tr>
+          <tr><td>SB</td><td>Stolen Base</td><td>Records each successful stolen base.</td></tr>
+          <tr><td>CS</td><td>Caught Stealing</td><td>Records each time a runner is called out attempting a stolen base.</td></tr>
+          <tr><td>BA</td><td>Batting Average</td><td>Displayed as three decimal places (.285 means 285 hits per 1,000 at bats).</td></tr>
+          <tr><td colspan="3"><div class="sym-note">★ Calculation: Total Hits ÷ Total At Bats</div></td></tr>
+          <tr><td>RISP</td><td>Runners in Scoring Position</td><td>Times you batted with a runner on 2nd and/or 3rd base.</td></tr>
+          <tr><td>BA RISP</td><td>Avg. with RISP</td><td>A good BA RISP means you are a clutch hitter.</td></tr>
+          <tr><td colspan="3"><div class="sym-note">★ Calculation: Hits with RISP ÷ At Bats with RISP</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cc-article" style="padding:14px">
+      <span class="sym-section-header">🛡️ Defensive Stats</span>
+      <table class="sym-table">
+        <thead><tr><th>Symbol</th><th>Name</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>E</td><td>Errors</td><td>How many times you failed when trying to make a play.</td></tr>
+          <tr><td>PO</td><td>Put Out</td><td>Credited when you make a catch resulting in an out (infielders at base, or outfielders catching fly balls).</td></tr>
+          <tr><td>A</td><td>Assists</td><td>Recorded when you throw the ball to a base/home plate where an out is recorded.</td></tr>
+          <tr><td>CH</td><td>Chances</td><td>How many times you had to make a defensive play (fielding, catching or throwing).</td></tr>
+          <tr><td>FLD%</td><td>Fielding %</td><td>Good fielders hit .900+. Great fielders make 970 plays out of 1,000 chances.</td></tr>
+          <tr><td colspan="3"><div class="sym-note">★ Calculation: Total Chances ÷ Total Errors</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cc-article" style="padding:14px">
+      <span class="sym-section-header">🎯 Pitching Stats</span>
+      <table class="sym-table">
+        <thead><tr><th>Symbol</th><th>Name</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>INN</td><td>Innings Pitched</td><td>Number of innings pitched.</td></tr>
+          <tr><td>H</td><td>Hits Allowed</td><td>Total number of hits given up by a pitcher.</td></tr>
+          <tr><td>R</td><td>Runs Allowed</td><td>Total number of runs given up.</td></tr>
+          <tr><td>ER</td><td>Earned Runs</td><td>Runs given up that were earned. Runs scored due to errors are NOT credited to the pitcher.</td></tr>
+          <tr><td>SO</td><td>Strikeouts</td><td>Number of strikeouts recorded.</td></tr>
+          <tr><td>BB</td><td>Walks Allowed</td><td>Number of base on balls (walks) allowed.</td></tr>
+          <tr><td>ERA</td><td>Earned Run Average</td><td>How many earned runs a pitcher gives up per game pitched on average.</td></tr>
+          <tr><td colspan="3"><div class="sym-note">★ Calculation: (Total Earned Runs ÷ Total Innings Pitched) × 7</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CC: Sayings -->
+<div id="cc-sayings" class="screen">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('coaches-corner')">←</button>
+    <div class="header-text"><h2>💬 Softball Sayings</h2><p>The lingo of the diamond</p></div>
+  </div>
+  <div class="scroll-area">
+    <div class="cc-article"><h3>"Can of Corn"</h3><p>Refers to a fly ball that can be easily caught.</p></div>
+    <div class="cc-article"><h3>"Swinging Bunt"</h3><p>Occurs when a batter takes a full swing but the ball only travels a few feet in front of home plate.</p></div>
+    <div class="cc-article"><h3>"Texas Leaguer"</h3><p>A fly ball that lands in between both the infielder and outfielder. It usually pertains to a pesky base hit.</p></div>
+    <div class="cc-article"><h3>"Blooper"</h3><p>Similar to the Texas Leaguer, but these fly balls (or pop-ups) can land between any defensive players on the field.</p></div>
+    <div class="cc-article"><h3>"Hit a Bullet"</h3><p>A hard-hit ball, often a line drive.</p></div>
+    <div class="cc-article"><h3>"Pitching Peas"</h3><p>A pitcher who is throwing exceptionally fast!</p></div>
+    <div class="cc-article"><h3>"A Five-Tool Player"</h3><p>Refers to an all-around player who excels at hitting for average, hitting for power, speed, fielding, and arm strength.</p></div>
+    <div class="cc-article"><h3>"A Cannon"</h3><p>Usually refers to an outfielder who has exceptional velocity on their throws!</p></div>
+    <div class="cc-article"><h3>"Let's Get the Big Half"</h3><p>Refers to the team trying to get the second out of an inning. Getting the 2nd out passes the 50% threshold of outs needed — thus the "big half."</p></div>
+    <div class="cc-article"><h3>"Submarine Thrower"</h3><p>Refers to a pitcher or infielder who, upon throwing the ball, releases it from around their knees.</p></div>
+    <div class="cc-article"><h3>"Ace"</h3><p>The best pitcher on the team!</p></div>
+    <div class="cc-article"><h3>"Cleanup Hitter"</h3><p>The fourth batter in the lineup. The idea is the first three hitters get on base and the fourth batter hits them all in — clearing, or cleaning up, the bases.</p></div>
+    <div class="cc-article"><h3>"Walk-off"</h3><p>A play that ends the game by scoring the winning run in the bottom of the last inning. Usually refers to a walk-off hit, but a bases-loaded walk or hit-by-pitch can also be a walk-off.</p></div>
+    <div class="cc-article"><h3>"Baltimore Chop"</h3><p>An old term reflecting a batter trying on purpose to hit the ball off the plate, or just in front of it.</p></div>
+    <div class="cc-article"><h3>"PUP"</h3><p>Short for "pick-up players." Club teams in tournaments are allowed PUPs but must register them separately on the team roster.</p></div>
+    <div class="cc-article"><h3>"Guarding the Lines"</h3><p>A two-out defensive strategy where the first and third basemen play closer to their respective foul lines to prevent an extra-base hit, keeping base hits in the middle of the field as singles.</p></div>
+    <div class="cc-article"><h3>"Southpaw"</h3><p>Slang term for a left-handed pitcher.</p></div>
+    <div class="cc-article"><h3>"Junk-Ball Pitcher"</h3><p>Pitchers who don't throw at high speeds but rely on crafty pitches — change-ups and off-speed pitches — while hitting spots on the edges of the strike zone.</p></div>
+    <div class="cc-article"><h3>"Touch Them All"</h3><p>Refers to a batter who hit a home run and touches all the bases on their way home.</p></div>
+    <div class="cc-article"><h3>"Pine Tar"</h3><p>A sticky substance batters put on the handle of the bat to get a better grip.</p></div>
+    <div class="cc-article"><h3>"Bullpen"</h3><p>The area on the field where relief pitchers congregate during the game and warm up before entering.</p></div>
+    <div class="cc-article"><h3>"Grand Slam"</h3><p>A bases-loaded home run, scoring four runs with one swing of the bat.</p></div>
+    <div class="cc-article"><h3>"Twin-Killing"</h3><p>A term used for a double play. The premise is that hitting into a double play kills (or deflates) the offensive team during an inning.</p></div>
+    <div class="cc-article"><h3>"A Perfect Game"</h3><p>The pitcher faces 21 batters (7 innings × 3 outs) and all 21 are out with nobody reaching base.</p></div>
+    <div class="cc-article"><h3>"A No-Hitter"</h3><p>Similar to a perfect game, but the pitcher allows no base hits. Some batters may reach base via walks, hit batters, or errors.</p></div>
+    <div class="cc-article"><h3>"6-4-3"</h3><p>Position numbers used to score the game. 6-4-3 is the most common double play: Shortstop (6) → Second Baseman (4) → First Baseman (3).</p></div>
+    <div class="cc-article"><h3>"Wheelhouse"</h3><p>A batter's power zone — where they can hit the ball most effectively.</p></div>
+    <div class="cc-article"><h3>"Utility"</h3><p>Refers to a defensive player who plays (or specializes) in more than one position.</p></div>
+    <div class="cc-article"><h3>"Eye Black"</h3><p>A substance applied under the players' eyes to deflect the sun. Mainly applied on sunny days.</p></div>
+    <div class="cc-article"><h3>"Dugout"</h3><p>Where each team sits during the game. The home team's dugout is usually on the third-base side. The visitors' dugout is on the first-base side.</p></div>
+  </div>
+</div>
+
+<!-- CC: Unwritten Rules -->
+<div id="cc-unwritten" class="screen">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('coaches-corner')">←</button>
+    <div class="header-text"><h2>🤝 Unwritten Rules</h2><p>Respect, tradition &amp; the grey areas</p></div>
+  </div>
+  <div class="scroll-area">
+    <div class="cc-intro">Superstitions, opinions, strategy and tradition. These rules are not written in any rule book — they live in a "grey area" where there is no right or wrong. Most are built on respect and sportsmanship for the game, your teammates, opponents and umpires. Always remember: <em>"What offends the heck out of you might not bother me at all!"</em></div>
+    <div class="cc-article">
+      <h3>Don't Showboat When You Do Something Good!</h3>
+      <p>Respect for your opponent is a big priority. Here are some examples:</p>
+      <ul>
+        <li>When you hit a home run, act like you've hit them before. Don't stare at the pitcher or point fingers — have a steady jog around the bases.</li>
+        <li>When scoring a run, touch the plate. Don't do cartwheels or other acts that draw attention.</li>
+        <li>Never talk down to your opponents. Instead, "talk up" to your teammates.</li>
+        <li>As a base runner, no yelling or intentional distractions while an opposition fielder is catching a pop/fly ball.</li>
+      </ul>
+    </div>
+    <div class="cc-article">
+      <h3>Don't Run Up the Score When Comfortably Ahead!</h3>
+      <p>This debate never ends — nobody can even agree on what "comfortably ahead" means. Is it 10 runs or 20? Veteran coaches know when enough is enough. The job of a coach is to win ball games and do it with dignity.</p>
+      <p style="margin-top:10px">Other aspects include: refrain from stealing bases, bunting, or advancing on wild pitches/passed balls when comfortably ahead. Keep the bunting bats in the bag for the next game!</p>
+    </div>
+    <div class="cc-article">
+      <h3>Don't Lose on Purpose</h3>
+      <p>What's the point of playing when your opponent goes out of its way to lose? At its lowest root, sport is all about competition. It's why we practice and why we travel to play.</p>
+      <p style="margin-top:10px">There is one rare instance — cash-prize tournaments, where a team might see an easier path to the final by losing a round-robin game. But any other circumstance has to be about winning.</p>
+      <p style="margin-top:10px;font-size:13px;color:#94A3B8">"Different strokes for different folks" — but the debate always starts with both sides being right.</p>
+    </div>
+  </div>
 </div>
 
 </div><!-- #app -->
